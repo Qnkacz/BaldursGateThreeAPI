@@ -1,17 +1,15 @@
-package wasik;
+package wasik
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 
 /**
  * Hello world!
  *
  */
 @SpringBootApplication
-public class App
-{
-    public static void main( String[] args )
-    {
-        SpringApplication.run(App.class);
-    }
+open class App
+
+fun main(args: Array<String>) {
+    runApplication<App>(*args)
 }
