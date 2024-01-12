@@ -3,10 +3,6 @@ package wasik
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
-/**
- * Hello world!
- *
- */
 @SpringBootApplication
 open class App
 
