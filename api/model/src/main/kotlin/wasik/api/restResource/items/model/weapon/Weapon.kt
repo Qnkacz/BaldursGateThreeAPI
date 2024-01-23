@@ -1,8 +1,8 @@
-package wasik.api.model.weapon
+package wasik.api.restResource.items.model.weapon
 
 import io.swagger.v3.oas.annotations.media.Schema
-import wasik.api.model.Property
-import wasik.api.model.damage.Damage
+import wasik.api.restResource.items.model.Property
+import wasik.api.restResource.items.model.damage.Damage
 
 @Schema(description = "Model for weapons used in Baldur's Gate 3")
 data class Weapon(

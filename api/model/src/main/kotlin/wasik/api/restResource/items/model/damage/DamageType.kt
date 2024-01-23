@@ -1,4 +1,4 @@
-package wasik.api.model.damage
+package wasik.api.restResource.items.model.damage
 
 import io.swagger.v3.oas.annotations.media.Schema
 

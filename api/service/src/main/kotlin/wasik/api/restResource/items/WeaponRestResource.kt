@@ -1,4 +1,4 @@
-package wasik.api.restResource.items.weapon
+package wasik.api.restResource.items
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -8,8 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
-import wasik.api.model.Errors.ApiError
-import wasik.api.model.weapon.Weapon
+import wasik.api.restResource.items.model.errors.ApiError
+import wasik.api.restResource.items.model.weapon.Weapon
 
 @Tag(name = "Items", description = "Items rest resource")
 interface WeaponRestResource {
