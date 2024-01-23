@@ -1,4 +1,4 @@
-package wasik.api.restResource.items.model.weapon
+package wasik.api.restResource.items.model
 
 import io.swagger.v3.oas.annotations.media.Schema
 

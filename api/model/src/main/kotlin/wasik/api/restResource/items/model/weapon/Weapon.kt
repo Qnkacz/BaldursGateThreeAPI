@@ -1,6 +1,8 @@
 package wasik.api.restResource.items.model.weapon
 
 import io.swagger.v3.oas.annotations.media.Schema
+import wasik.api.restResource.items.model.IItem
+import wasik.api.restResource.items.model.ItemRarity
 import wasik.api.restResource.items.model.Property
 import wasik.api.restResource.items.model.damage.Damage
 
@@ -11,8 +13,8 @@ data class Weapon(
         example = "Longsword +1",
         required = true
     )
-    val name: String,
-    val rarity: ItemRarity,
+    override val name: String,
+    override val rarity: ItemRarity,
     val proficiency: WeaponProficiency,
     val type: WeaponType,
     val weaponClass: WeaponClass,
@@ -27,14 +29,15 @@ data class Weapon(
         required = true,
         example = "50,9"
     )
-    val weight: Float,
+    override val weight: Float,
     @field:Schema(
         description = "Item value",
         required = true,
         example = "33,6"
     )
-    val value: Float,
+    override val value: Float,
     val damage: Set<Damage>,
     val properties: Set<Property>,
-    val actions: Set<Action>
-)
+    val actions: Set<Action>,
+    override val description: String
+) : IItem
