@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.RequestBody
 import wasik.api.restResource.items.model.errors.ApiError
 import wasik.api.restResource.items.model.weapon.Weapon
 
@@ -41,4 +42,5 @@ interface WeaponRestResource {
         ]
     )
     suspend fun getWeaponByName(@Parameter(description = "Name of the weapon") name: String): ResponseEntity<Weapon>
+    suspend fun postWeapon(@Parameter weapon: Weapon): ResponseEntity<Void>
 }
