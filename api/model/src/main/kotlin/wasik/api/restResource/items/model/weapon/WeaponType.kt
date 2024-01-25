@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 enum class WeaponType {
     MELEE,
     VERSATILE,
+    RANGED,
     TWO_HANDED_MELEE,
     TWO_HANDED_RANGED
 }

@@ -10,6 +10,7 @@ class ProficiencyMapperImpl : ProficiencyMapper {
         return when(weaponProficiency) {
             WeaponProficiency.MARTIAL -> DomainWeaponProficiency.MARTIAL
             WeaponProficiency.SIMPLE -> DomainWeaponProficiency.SIMPLE
+            else -> throw Exception("Bad Die value") // TODO: Implement proper Exception throwing with exception handlers
         }
     }
 }
