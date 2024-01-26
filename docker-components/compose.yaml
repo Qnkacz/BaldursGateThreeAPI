@@ -13,9 +13,7 @@ services:
     image: baldurs-gate-3-api:latest
     container_name: bg3_api
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/my_database
-      SPRING_DATASOURCE_USERNAME: myuser
-      SPRING_DATASOURCE_PASSWORD: secret
+      - DATABASE_URL=r2dbc:postgresql://myuser:secret@localhost:5432/mydatabase
     ports:
       - "8080:8080"
     depends_on:

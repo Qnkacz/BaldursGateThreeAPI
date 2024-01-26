@@ -1,0 +1,3 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://myuser:secret@localhost:5432/mydatabase # ${DATABASE_URL}
