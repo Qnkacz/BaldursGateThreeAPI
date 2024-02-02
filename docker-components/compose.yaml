@@ -1,20 +1,20 @@
 services:
   postgres:
-    image: 'postgres:latest'
+    image: 'postgres:16.1'
     container_name: bg3_api_db
     environment:
       - 'POSTGRES_DB=mydatabase'
       - 'POSTGRES_PASSWORD=secret'
       - 'POSTGRES_USER=myuser'
     ports:
-      - '5432'
+      - '5432:5432'
 
-  baldurs-gate-api:
-    image: baldurs-gate-3-api:latest
-    container_name: bg3_api
-    environment:
-      - DATABASE_URL=r2dbc:postgresql://myuser:secret@localhost:5432/mydatabase
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgres
+#  baldurs-gate-api:
+#    image: baldurs-gate-3-api:latest
+#    container_name: bg3_api
+#    environment:
+#      - DATABASE_URL=r2dbc:postgresql://myuser:secret@localhost:5432/mydatabase
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - postgres

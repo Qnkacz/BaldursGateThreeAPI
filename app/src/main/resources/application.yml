@@ -1,3 +1,11 @@
 spring:
   r2dbc:
-    url: r2dbc:postgresql://myuser:secret@localhost:5432/mydatabase # ${DATABASE_URL}
+    url: r2dbc:postgresql://localhost:5432/mydatabase # ${DATABASE_URL}
+    username: myuser #{DATABASE_USERNAME}
+    password: secret #{DATABASE_PASSWORD}
+
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/mydatabase
+    user: myuser
+    password: secret

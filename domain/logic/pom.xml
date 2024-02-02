@@ -29,5 +29,23 @@
             <artifactId>domain-model</artifactId>
             <version>0.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>wasik</groupId>
+            <artifactId>domain-model</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>wasik</groupId>
+            <artifactId>infrastructure-model</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>wasik</groupId>
+            <artifactId>infrastructure-logic</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

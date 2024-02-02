@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import wasik.api.mapper.item.weapon.WeaponMapper
 import wasik.api.restResource.items.model.weapon.Weapon
+import wasik.items.WeaponService
 
 @RestController
 @RequestMapping("/api/weapon")
-open class WeaponRestResourceImpl(val weaponMapper: WeaponMapper) : WeaponRestResource {
+open class WeaponRestResourceImpl(private val weaponMapper: WeaponMapper, private val weaponService: WeaponService) : WeaponRestResource {
     @GetMapping("/{name}")
     override suspend fun getWeaponByName(@PathVariable name: String): ResponseEntity<Weapon> {
         return ResponseEntity.ok(null);
@@ -23,7 +24,7 @@ open class WeaponRestResourceImpl(val weaponMapper: WeaponMapper) : WeaponRestRe
     @PostMapping
     override suspend fun postWeapon(@RequestBody weapon: Weapon): ResponseEntity<Void> = coroutineScope {
         val weapon = async { weaponMapper.mapToWeapon(weapon) }
-        // TODO make it work
+        weaponService.postWeapon(weapon.await())
         ResponseEntity.ok().build()
     }
 
