@@ -23,8 +23,8 @@ open class WeaponRestResourceImpl(private val weaponMapper: WeaponMapper, privat
 
     @PostMapping
     override suspend fun postWeapon(@RequestBody weapon: Weapon): ResponseEntity<Void> = coroutineScope {
-        val weapon = async { weaponMapper.mapToWeapon(weapon) }
-        weaponService.postWeapon(weapon.await())
+        val domainWeapon = async { weaponMapper.mapToWeapon(weapon) }
+        weaponService.postWeapon(domainWeapon.await())
         ResponseEntity.ok().build()
     }
 
