@@ -3,14 +3,14 @@ package wasik.items
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import model.item.weapon.Weapon
 import org.springframework.stereotype.Service
 import wasik.DamageInfraMapper
 import wasik.entity.DamageEntity
 import wasik.entity.item.weapon.WeaponDamageEntity
-import wasik.items.mapper.WeaponInfraMapper
 import wasik.entity.item.weapon.WeaponEntity
+import wasik.items.mapper.WeaponInfraMapper
 import wasik.repository.DamageRepository
 import wasik.repository.WeaponDamageRepository
 import wasik.repository.WeaponRepository
@@ -24,38 +24,46 @@ class WeaponServiceImpl(
     private val weaponDamageRepository: WeaponDamageRepository
 ) :
     WeaponService {
-    override suspend fun postWeapon(weapon: Weapon): WeaponEntity = coroutineScope {
+    override suspend fun postWeapon(weapon: Weapon): Unit = coroutineScope {
         //todo add validator for things link if weapon doesn't have like 10 dmg types and other nonsenses
-        val weaponEntity = async { weaponInfraMapper.mapToWeaponEntity(weapon) }
-        val weaponDamage = weapon.damage.map {
-            async {
-                damageInfraMapper.mapToDamageEntity(it)
-            }
-        }
-            .awaitAll()
-        val savedWeaponEntity = weaponRepository.save(weaponEntity.await())
-        val savedDamages = damageRepository.saveAll(weaponDamage)
-        savedDamages
-            .map {  createWeaponDamageEntity(savedWeaponEntity, it)}
-            .collect { weaponDamageRepository.save(it)}
-
-
-        return@coroutineScope savedWeaponEntity
+        val savedWeaponEntity: WeaponEntity = saveWeaponEntity(weapon)
+        val savedDamages: List<DamageEntity> = saveDamageEntities(weapon)
+        saveWeaponDamage(savedDamages, savedWeaponEntity)
     }
 
     override suspend fun getWeaponByName(name: String): Weapon {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateWeapon(name: String, weapon: Weapon): Weapon {
+    override suspend fun updateWeapon(name: String, weapon: Weapon) {
         TODO("Not yet implemented")
     }
 
-    private fun createWeaponDamageEntity(
-        weaponEntity: WeaponEntity,
-        damageEntity: DamageEntity
-    ): WeaponDamageEntity {
-        val weaponDamageEntityId = WeaponDamageEntity.WeaponDamageId(damageEntity.id!!, weaponEntity.id!!)
-        return WeaponDamageEntity(weaponDamageEntityId, damageEntity.id!!, weaponEntity.id!!)
+    private suspend fun saveWeaponDamage(
+        savedDamages: List<DamageEntity>,
+        savedWeaponEntity: WeaponEntity
+    ) = coroutineScope {
+        val weaponDamageList: List<WeaponDamageEntity> = savedDamages.map {
+            WeaponDamageEntity(it.id!!, savedWeaponEntity.id!!)
+        }.toList()
+        weaponDamageList.map {
+            async { weaponDamageRepository.saveWeaponDamage(it) }
+        }
+            .awaitAll()
+    }
+
+    private suspend fun saveDamageEntities(weapon: Weapon): List<DamageEntity> = coroutineScope {
+        val weaponDamage = weapon.damage.map {
+            async {
+                damageInfraMapper.mapToDamageEntity(it)
+            }
+        }
+            .awaitAll()
+        return@coroutineScope damageRepository.saveAll(weaponDamage).toList()
+    }
+
+    private suspend fun saveWeaponEntity(weapon: Weapon): WeaponEntity = coroutineScope {
+        val weaponEntity = async { weaponInfraMapper.mapToWeaponEntity(weapon) }
+        return@coroutineScope weaponRepository.save(weaponEntity.await())
     }
 }

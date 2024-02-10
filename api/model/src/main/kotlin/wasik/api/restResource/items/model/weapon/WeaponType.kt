@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 @Schema(
     description = "Weapon type",
     required = true,
-    example = "Melee"
+    example = "MELEE"
 )
 enum class WeaponType {
     MELEE,

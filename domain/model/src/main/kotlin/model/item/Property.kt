@@ -1,3 +1,3 @@
 package model.item
 
-data class Property(val name: String, val description: String);
+data class Property(val name: String, val description: String)

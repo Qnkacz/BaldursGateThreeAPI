@@ -18,7 +18,7 @@ import wasik.items.WeaponService
 open class WeaponRestResourceImpl(private val weaponMapper: WeaponMapper, private val weaponService: WeaponService) : WeaponRestResource {
     @GetMapping("/{name}")
     override suspend fun getWeaponByName(@PathVariable name: String): ResponseEntity<Weapon> {
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(null)
     }
 
     @PostMapping
