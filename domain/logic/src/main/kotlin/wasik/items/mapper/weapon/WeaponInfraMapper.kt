@@ -1,4 +1,4 @@
-package wasik.items.mapper
+package wasik.items.mapper.weapon
 
 import model.item.weapon.Weapon
 import wasik.entity.item.weapon.WeaponEntity

@@ -1,4 +1,4 @@
-package wasik.items.mapper
+package wasik.items.mapper.weapon
 
 import kotlinx.coroutines.coroutineScope
 import model.item.weapon.Weapon

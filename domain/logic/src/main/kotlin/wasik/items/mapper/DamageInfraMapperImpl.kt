@@ -1,4 +1,4 @@
-package wasik
+package wasik.items.mapper
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

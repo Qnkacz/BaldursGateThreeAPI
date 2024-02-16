@@ -37,7 +37,8 @@ create table if not exists actions
 create table if not exists weapon_actions
 (
     weapon_id  int references weapons (id) on delete cascade,
-    actions_id int references weapons (id) on delete cascade
+    actions_id int references actions (id) on delete cascade,
+    PRIMARY KEY (weapon_id, actions_id)
 );
 
 -- PROPERTY AND CROSS TABLE
@@ -52,5 +53,6 @@ create table if not exists property
 create table if not exists weapon_properties
 (
     weapon_id  int references weapons (id) on delete cascade,
-    actions_id int references weapons (id) on delete cascade
+    property_id int references property (id) on delete cascade,
+    PRIMARY KEY (weapon_id, property_id)
 );

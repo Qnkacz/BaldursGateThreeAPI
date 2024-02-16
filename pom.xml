@@ -23,7 +23,7 @@
     <properties>
         <java.version>17</java.version>
         <kotlin.version>1.9.22</kotlin.version>
-        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+<!--        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>-->
     </properties>
     <dependencies>
         <dependency>
@@ -115,6 +115,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass> wasik.AppKt</mainClass>
+                    <classifier>exec</classifier>
                 </configuration>
             </plugin>
             <plugin>
@@ -145,5 +146,4 @@
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
     </build>
-
 </project>

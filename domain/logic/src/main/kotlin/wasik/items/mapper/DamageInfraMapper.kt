@@ -1,4 +1,4 @@
-package wasik
+package wasik.items.mapper
 
 import model.damage.Damage
 import wasik.entity.DamageEntity
