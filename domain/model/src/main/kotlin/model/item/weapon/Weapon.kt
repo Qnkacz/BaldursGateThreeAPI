@@ -3,7 +3,8 @@ package model.item.weapon
 import model.damage.Damage
 import model.item.CommonItemData
 import model.item.ItemRarity
-import model.item.Property
+import model.misc.Action
+import model.misc.Property
 
 data class Weapon(
     val commonData: CommonItemData,

@@ -1,4 +1,4 @@
-package model
+package model.misc
 
 enum class DieType {
     D4,

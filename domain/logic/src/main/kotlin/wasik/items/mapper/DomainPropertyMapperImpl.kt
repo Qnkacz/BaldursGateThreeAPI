@@ -1,7 +1,7 @@
 package wasik.items.mapper
 
 import kotlinx.coroutines.coroutineScope
-import model.item.Property
+import model.misc.Property
 import org.springframework.stereotype.Component
 import wasik.entity.PropertyEntity
 

@@ -1,6 +1,6 @@
 package model.damage
 
-import model.DieType
+import model.misc.DieType
 
 data class Damage(
     val damageType: DamageType,

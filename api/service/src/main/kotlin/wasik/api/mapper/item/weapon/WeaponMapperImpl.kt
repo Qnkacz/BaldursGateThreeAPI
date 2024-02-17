@@ -4,8 +4,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import model.damage.Damage
-import model.item.Property
-import model.item.weapon.Action
+import model.misc.Action
+import model.misc.Property
 import org.springframework.stereotype.Component
 import wasik.api.mapper.item.CommonItemDataMapper
 import wasik.api.mapper.item.PropertyMapper

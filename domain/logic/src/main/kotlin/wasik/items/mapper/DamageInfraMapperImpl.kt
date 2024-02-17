@@ -2,8 +2,8 @@ package wasik.items.mapper
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import model.DieType
 import model.damage.Damage
+import model.misc.DieType
 import org.springframework.stereotype.Component
 import wasik.entity.DamageEntity
 

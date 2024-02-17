@@ -2,7 +2,7 @@ package wasik.api.mapper.item
 
 import org.springframework.stereotype.Component
 import wasik.api.restResource.items.model.Property
-import model.item.Property as DomainProperty
+import model.misc.Property as DomainProperty
 
 @Component
 class PropertyMapperImpl : PropertyMapper {

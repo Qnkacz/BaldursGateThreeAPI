@@ -1,7 +1,7 @@
 package wasik.items.mapper
 
 import kotlinx.coroutines.coroutineScope
-import model.item.weapon.Action
+import model.misc.Action
 import org.springframework.stereotype.Component
 import wasik.entity.ActionEntity
 

@@ -2,7 +2,7 @@ package wasik.api.mapper.item.weapon
 
 import org.springframework.stereotype.Component
 import wasik.api.restResource.items.model.weapon.Action
-import model.item.weapon.Action as DomainAction
+import model.misc.Action as DomainAction
 
 @Component
 class ActionMapperImpl : ActionMapper {

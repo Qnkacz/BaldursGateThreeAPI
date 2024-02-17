@@ -2,12 +2,12 @@ package wasik.api.mapper.item
 
 import org.springframework.stereotype.Component
 import wasik.api.restResource.items.model.DieType
-import model.DieType as DomainDie
+import model.misc.DieType as DomainDie
 
 @Component
 class DieMapperImpl : DieMapper {
     override suspend fun mapDie(apiDie: DieType): DomainDie {
-        return when(apiDie) {
+        return when (apiDie) {
             DieType.D4 -> DomainDie.D4
             DieType.D6 -> DomainDie.D6
             DieType.D8 -> DomainDie.D8
