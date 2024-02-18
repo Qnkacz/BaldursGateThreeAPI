@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.Flow
 import domain.model.damage.Damage
 import domain.model.misc.Action
 import org.springframework.stereotype.Service
-import wasik.infrastructure.model.entity.DamageEntity
 import wasik.domain.logic.items.mapper.DamageInfraMapper
+import wasik.infrastructure.model.entity.DamageEntity
 import wasik.infrastructure.logic.repository.DamageRepository
 
 @Service

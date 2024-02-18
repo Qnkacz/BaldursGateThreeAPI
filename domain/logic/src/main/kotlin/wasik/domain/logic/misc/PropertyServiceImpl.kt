@@ -7,13 +7,13 @@ import kotlinx.coroutines.flow.Flow
 import domain.model.misc.Action
 import domain.model.misc.Property
 import org.springframework.stereotype.Service
+import wasik.domain.logic.items.mapper.DomainPropertyMapper
 import wasik.infrastructure.model.entity.PropertyEntity
-import wasik.domain.logic.items.mapper.PropertyMapper
 import wasik.infrastructure.logic.repository.PropertyRepository
 
 @Service
 class PropertyServiceImpl(
-    private val propertyMapper: PropertyMapper,
+    private val domainPropertyMapper: DomainPropertyMapper,
     private val propertyRepository: PropertyRepository
 ) : PropertyService {
     override suspend fun postProperty(property: Property) {
@@ -23,7 +23,7 @@ class PropertyServiceImpl(
     override suspend fun postProperties(properties: Collection<Property>): Flow<PropertyEntity> = coroutineScope {
         val weaponDamage = properties.map {
             async {
-                propertyMapper.mapToPropertyEntity(it)
+                domainPropertyMapper.mapToPropertyEntity(it)
             }
         }.awaitAll()
         return@coroutineScope propertyRepository.saveAll(weaponDamage)

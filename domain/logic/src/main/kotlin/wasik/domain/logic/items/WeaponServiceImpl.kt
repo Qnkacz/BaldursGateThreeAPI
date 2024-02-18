@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import domain.model.item.weapon.Weapon
 import org.springframework.stereotype.Service
+import wasik.domain.logic.items.mapper.weapon.WeaponInfraMapper
 import wasik.infrastructure.model.entity.ActionEntity
 import wasik.infrastructure.model.entity.DamageEntity
 import wasik.infrastructure.model.entity.PropertyEntity
@@ -13,7 +14,6 @@ import wasik.infrastructure.model.entity.item.weapon.WeaponActionEntity
 import wasik.infrastructure.model.entity.item.weapon.WeaponDamageEntity
 import wasik.infrastructure.model.entity.item.weapon.WeaponEntity
 import wasik.infrastructure.model.entity.item.weapon.WeaponPropertyEntity
-import wasik.domain.logic.items.mapper.weapon.WeaponInfraMapper
 import wasik.domain.logic.misc.ActionService
 import wasik.domain.logic.misc.DamageService
 import wasik.domain.logic.misc.PropertyService

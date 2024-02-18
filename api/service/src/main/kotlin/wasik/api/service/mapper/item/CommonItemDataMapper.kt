@@ -1,8 +1,15 @@
 package wasik.api.service.mapper.item
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import domain.model.item.CommonItemData
+import org.springframework.stereotype.Component
 import wasik.api.model.IItem
 
-interface CommonItemDataMapper {
-    suspend fun mapToCommonItemInfo(item: IItem): CommonItemData
+@Component
+class CommonItemDataMapper(private val rarityMapper: RarityMapper) {
+    suspend fun mapToCommonItemInfo(item: IItem): CommonItemData = coroutineScope {
+        val rarity = async { rarityMapper.mapToRarity(item.rarity) }
+        CommonItemData(item.name, rarity.await(), item.value, item.weight, item.description)
+    }
 }

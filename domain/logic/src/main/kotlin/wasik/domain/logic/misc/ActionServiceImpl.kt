@@ -6,14 +6,14 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import domain.model.misc.Action
 import org.springframework.stereotype.Service
+import wasik.domain.logic.items.mapper.DomainActionMapper
 import wasik.infrastructure.model.entity.ActionEntity
-import wasik.domain.logic.items.mapper.ActionMapper
 import wasik.infrastructure.logic.repository.ActionRepository
 
 @Service
 class ActionServiceImpl(
     private val actionRepository: ActionRepository,
-    private val domainActionMapperImpl: ActionMapper,
+    private val domainDomainActionMapper: DomainActionMapper,
 ) : ActionService {
     override suspend fun postAction(action: Action) {
         TODO("Not yet implemented")
@@ -22,7 +22,7 @@ class ActionServiceImpl(
     override suspend fun postActions(actions: Collection<Action>): Flow<ActionEntity> = coroutineScope {
         val weaponDamage = actions.map {
             async {
-                domainActionMapperImpl.mapToActionEntity(it)
+                domainDomainActionMapper.mapToActionEntity(it)
             }
         }.awaitAll()
         return@coroutineScope actionRepository.saveAll(weaponDamage)

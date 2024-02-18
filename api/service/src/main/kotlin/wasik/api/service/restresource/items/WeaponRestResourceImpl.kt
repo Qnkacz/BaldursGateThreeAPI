@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import wasik.api.service.mapper.item.weapon.WeaponMapper
 import wasik.api.model.model.weapon.Weapon
+import wasik.api.service.mapper.item.weapon.WeaponMapper
 import wasik.domain.logic.items.WeaponService
 
 @RestController
