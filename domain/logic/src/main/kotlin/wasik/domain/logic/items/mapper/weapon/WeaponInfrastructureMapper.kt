@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 import wasik.infrastructure.model.entity.item.weapon.WeaponEntity
 
 @Component
-class WeaponInfraMapper {
+class WeaponInfrastructureMapper {
     suspend fun mapToWeaponEntity(weapon: Weapon): WeaponEntity = coroutineScope {
         WeaponEntity(
             null,

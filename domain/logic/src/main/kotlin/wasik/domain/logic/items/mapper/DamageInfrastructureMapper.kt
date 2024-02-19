@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 import wasik.infrastructure.model.entity.DamageEntity
 
 @Component
-class DamageInfraMapper {
+class DamageInfrastructureMapper {
     suspend fun mapToDamageEntity(damage: Damage): DamageEntity = coroutineScope {
         val damageEntity = async { damageToString(damage.dieType, damage.dieAmount) }
         DamageEntity(null, type = damage.damageType.ordinal, amount = damageEntity.await())

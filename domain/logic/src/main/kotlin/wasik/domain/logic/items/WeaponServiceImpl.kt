@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import domain.model.item.weapon.Weapon
 import org.springframework.stereotype.Service
-import wasik.domain.logic.items.mapper.weapon.WeaponInfraMapper
+import wasik.domain.logic.items.mapper.weapon.WeaponInfrastructureMapper
 import wasik.infrastructure.model.entity.ActionEntity
 import wasik.infrastructure.model.entity.DamageEntity
 import wasik.infrastructure.model.entity.PropertyEntity
@@ -24,7 +24,7 @@ import wasik.infrastructure.logic.repository.weapon.WeaponRepository
 
 @Service
 class WeaponServiceImpl(
-    private val weaponInfraMapper: WeaponInfraMapper,
+    private val weaponInfrastructureMapper: WeaponInfrastructureMapper,
     private val damageService: DamageService,
     private val propertyService: PropertyService,
     private val weaponRepository: WeaponRepository,
@@ -82,7 +82,7 @@ class WeaponServiceImpl(
     }
 
     private suspend fun saveWeaponEntity(weapon: Weapon): WeaponEntity = coroutineScope {
-        val weaponEntity = async { weaponInfraMapper.mapToWeaponEntity(weapon) }
+        val weaponEntity = async { weaponInfrastructureMapper.mapToWeaponEntity(weapon) }
         return@coroutineScope weaponRepository.save(weaponEntity.await())
     }
 }
