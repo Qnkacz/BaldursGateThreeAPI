@@ -1,7 +1,7 @@
 package wasik.api.model.model.weapon
 
 import io.swagger.v3.oas.annotations.media.Schema
-import wasik.api.model.IItem
+import wasik.api.model.ItemInterface
 import wasik.api.model.item.ItemRarity
 import wasik.api.model.Property
 import wasik.api.model.model.damage.Damage
@@ -40,4 +40,4 @@ data class Weapon(
     val properties: Set<Property>,
     val actions: Set<Action>,
     override val description: String
-) : IItem
+) : ItemInterface

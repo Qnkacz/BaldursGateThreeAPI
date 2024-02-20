@@ -2,7 +2,7 @@ package wasik.api.model
 
 import wasik.api.model.item.ItemRarity
 
-interface IItem {
+interface ItemInterface {
     val name: String
     val rarity: ItemRarity
     val value: Float
