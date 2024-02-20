@@ -31,8 +31,14 @@
         </dependency>
         <dependency>
             <groupId>wasik</groupId>
+            <artifactId>domain-model</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>wasik</groupId>
             <artifactId>domain-logic</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
