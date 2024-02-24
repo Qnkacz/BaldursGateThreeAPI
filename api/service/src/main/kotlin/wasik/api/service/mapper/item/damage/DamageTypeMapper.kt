@@ -1,6 +1,8 @@
 package wasik.api.service.mapper.item.damage
 
 import org.springframework.stereotype.Component
+import wasik.api.model.exception.ApiException
+import wasik.api.model.exception.ApiExceptionType
 import wasik.api.model.model.damage.DamageType
 import domain.model.damage.DamageType as DomainDamageType
 
@@ -19,7 +21,7 @@ class DamageTypeMapper {
             DamageType.PSYCHIC -> DomainDamageType.PSYCHIC
             DamageType.FORCE -> DomainDamageType.FORCE
             DamageType.POISON -> DomainDamageType.POISON
-            else -> throw Exception("Bad Die value") // TODO: Implement proper Exception throwing with exception handlers
+            else -> throw ApiException(type = ApiExceptionType.MAPPING_ERROR, message = "Could not map damage type")
         }
     }
 }

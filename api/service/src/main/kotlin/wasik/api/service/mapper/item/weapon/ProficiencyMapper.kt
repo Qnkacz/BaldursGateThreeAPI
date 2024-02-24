@@ -1,6 +1,8 @@
 package wasik.api.service.mapper.item.weapon
 
 import org.springframework.stereotype.Component
+import wasik.api.model.exception.ApiException
+import wasik.api.model.exception.ApiExceptionType
 import wasik.api.model.model.weapon.WeaponProficiency
 import domain.model.item.weapon.WeaponProficiency as DomainWeaponProficiency
 
@@ -10,7 +12,7 @@ class ProficiencyMapper {
         return when(weaponProficiency) {
             WeaponProficiency.MARTIAL -> DomainWeaponProficiency.MARTIAL
             WeaponProficiency.SIMPLE -> DomainWeaponProficiency.SIMPLE
-            else -> throw Exception("Bad Die value") // TODO: Implement proper Exception throwing with exception handlers
+            else -> throw ApiException(type = ApiExceptionType.MAPPING_ERROR, message = "Could not map weapon proficiency")
         }
     }
 }

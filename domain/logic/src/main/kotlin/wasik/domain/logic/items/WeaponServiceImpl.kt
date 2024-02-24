@@ -1,19 +1,14 @@
 package wasik.domain.logic.items
 
+import domain.model.exception.DomainException
+import domain.model.exception.DomainExceptionType
+import domain.model.item.weapon.Weapon
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import domain.model.item.weapon.Weapon
 import org.springframework.stereotype.Service
 import wasik.domain.logic.items.mapper.weapon.WeaponInfrastructureMapper
-import wasik.infrastructure.model.entity.ActionEntity
-import wasik.infrastructure.model.entity.DamageEntity
-import wasik.infrastructure.model.entity.PropertyEntity
-import wasik.infrastructure.model.entity.item.weapon.WeaponActionEntity
-import wasik.infrastructure.model.entity.item.weapon.WeaponDamageEntity
-import wasik.infrastructure.model.entity.item.weapon.WeaponEntity
-import wasik.infrastructure.model.entity.item.weapon.WeaponPropertyEntity
 import wasik.domain.logic.misc.ActionService
 import wasik.domain.logic.misc.DamageService
 import wasik.domain.logic.misc.PropertyService
@@ -21,6 +16,13 @@ import wasik.infrastructure.logic.repository.weapon.WeaponActionRepository
 import wasik.infrastructure.logic.repository.weapon.WeaponDamageRepository
 import wasik.infrastructure.logic.repository.weapon.WeaponPropertyRepository
 import wasik.infrastructure.logic.repository.weapon.WeaponRepository
+import wasik.infrastructure.model.entity.ActionEntity
+import wasik.infrastructure.model.entity.DamageEntity
+import wasik.infrastructure.model.entity.PropertyEntity
+import wasik.infrastructure.model.entity.item.weapon.WeaponActionEntity
+import wasik.infrastructure.model.entity.item.weapon.WeaponDamageEntity
+import wasik.infrastructure.model.entity.item.weapon.WeaponEntity
+import wasik.infrastructure.model.entity.item.weapon.WeaponPropertyEntity
 
 @Service
 class WeaponServiceImpl(
@@ -35,7 +37,12 @@ class WeaponServiceImpl(
 ) :
     WeaponService {
     override suspend fun postWeapon(weapon: Weapon): Unit = coroutineScope {
-        //todo add validator for things link if weapon doesn't have like 10 dmg types and other nonsenses
+        if (weapon.damage.first().dieAmount < 1) { // Add dedicated validator and move it there
+            throw DomainException(
+                type = DomainExceptionType.VALIDATION_ERROR,
+                message = "Damage die amount cannot be less than 1"
+            )
+        }
         val savedWeaponEntity: WeaponEntity = saveWeaponEntity(weapon)
         val savedDamages = async { damageService.postDamages(weapon.damage) }
         val savedProperties = async { propertyService.postProperties(weapon.properties) }

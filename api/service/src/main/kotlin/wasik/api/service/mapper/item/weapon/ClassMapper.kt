@@ -1,6 +1,8 @@
 package wasik.api.service.mapper.item.weapon
 
 import org.springframework.stereotype.Component
+import wasik.api.model.exception.ApiException
+import wasik.api.model.exception.ApiExceptionType
 import wasik.api.model.model.weapon.WeaponClass
 import domain.model.item.weapon.WeaponClass as DomainWeaponCLass
 
@@ -40,7 +42,7 @@ class ClassMapper {
             WeaponClass.TRIDENT -> DomainWeaponCLass.TRIDENT
             WeaponClass.WAR_PICK -> DomainWeaponCLass.WAR_PICK
             WeaponClass.WARHAMMER -> DomainWeaponCLass.WARHAMMER
-            else -> throw Exception("Bad Die value") // TODO: Implement proper Exception throwing with exception handlers
+            else -> throw ApiException(type = ApiExceptionType.MAPPING_ERROR, message = "Could not map weapon class")
         }
     }
 }
