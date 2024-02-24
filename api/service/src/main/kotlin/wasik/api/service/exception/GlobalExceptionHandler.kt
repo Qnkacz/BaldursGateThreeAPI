@@ -25,12 +25,12 @@ class GlobalExceptionHandler(
             is DomainException -> handleDomainException(ex)
             is ApiException -> handleApiException(ex)
             is InfrastructureException -> handleInfraStructureException(ex)
-            else -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(defaultErrorResponse())
+            else -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(defaultErrorResponse(ex))
         }
     }
 
-    private fun defaultErrorResponse(): ErrorResponse {
-        return ErrorResponse(code = "Unknown", message = "Unknown error occured")
+    private fun defaultErrorResponse(ex: RuntimeException): ErrorResponse {
+        return ErrorResponse(code = "Unknown", message = ex.message!!)
     }
 
     private fun handleApiException(ex: ApiException): ResponseEntity<ErrorResponse> {

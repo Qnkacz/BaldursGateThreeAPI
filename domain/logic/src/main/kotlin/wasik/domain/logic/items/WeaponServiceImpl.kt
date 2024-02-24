@@ -1,7 +1,5 @@
 package wasik.domain.logic.items
 
-import domain.model.exception.DomainException
-import domain.model.exception.DomainExceptionType
 import domain.model.item.weapon.Weapon
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -9,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.springframework.stereotype.Service
 import wasik.domain.logic.items.mapper.weapon.WeaponInfrastructureMapper
+import wasik.domain.logic.items.validation.WeaponValidator
 import wasik.domain.logic.misc.ActionService
 import wasik.domain.logic.misc.DamageService
 import wasik.domain.logic.misc.PropertyService
@@ -33,16 +32,12 @@ class WeaponServiceImpl(
     private val weaponDamageRepository: WeaponDamageRepository,
     private val weaponPropertyRepository: WeaponPropertyRepository,
     private val actionService: ActionService,
-    private val weaponActionRepository: WeaponActionRepository
+    private val weaponActionRepository: WeaponActionRepository,
+    private val weaponValidator: WeaponValidator
 ) :
     WeaponService {
     override suspend fun postWeapon(weapon: Weapon): Unit = coroutineScope {
-        if (weapon.damage.first().dieAmount < 1) { // Add dedicated validator and move it there
-            throw DomainException(
-                type = DomainExceptionType.VALIDATION_ERROR,
-                message = "Damage die amount cannot be less than 1"
-            )
-        }
+        weaponValidator.validate(weapon)
         val savedWeaponEntity: WeaponEntity = saveWeaponEntity(weapon)
         val savedDamages = async { damageService.postDamages(weapon.damage) }
         val savedProperties = async { propertyService.postProperties(weapon.properties) }
