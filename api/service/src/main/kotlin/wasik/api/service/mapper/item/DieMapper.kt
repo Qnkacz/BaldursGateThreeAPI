@@ -2,6 +2,8 @@ package wasik.api.service.mapper.item
 
 import org.springframework.stereotype.Component
 import wasik.api.model.DieType
+import wasik.api.model.exception.ApiException
+import wasik.api.model.exception.ApiExceptionType
 import domain.model.misc.DieType as DomainDie
 
 @Component
@@ -15,7 +17,7 @@ class DieMapper {
             DieType.D12 -> DomainDie.D12
             DieType.D20 -> DomainDie.D20
             DieType.D100 -> DomainDie.D100
-            else -> throw Exception("Bad Die value") // TODO: Implement proper Exception throwing with exception handlers
+            else -> throw ApiException(type = ApiExceptionType.MAPPING_ERROR, message = "Could not map Die type")
         }
     }
 }
