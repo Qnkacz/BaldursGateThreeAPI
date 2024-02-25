@@ -1,7 +1,6 @@
 package wasik.api.service.exception
 
 import domain.model.exception.DomainException
-import jakarta.validation.ConstraintViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -30,7 +29,7 @@ class GlobalExceptionHandler(
             else -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(defaultErrorResponse(ex))
         }
     }
-    //TODO HANDLE JAKARTA SOMEHOW
+
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleConstraintValidationExceptions(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
         val message = "Provided request body does not match the requirement standards"
