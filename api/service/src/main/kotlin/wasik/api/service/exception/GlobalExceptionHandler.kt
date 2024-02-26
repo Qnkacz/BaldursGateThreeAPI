@@ -32,8 +32,13 @@ class GlobalExceptionHandler(
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleConstraintValidationExceptions(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
-        val message = "Provided request body does not match the requirement standards"
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(code = "Parameter constraints", message = message))
+        val incorrectFields = ex.bindingResult.fieldErrors.joinToString(separator = " and ") { it.field }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            ErrorResponse(
+                code = "Parameter constraints",
+                message = "The following fields were not filled in correctly: $incorrectFields"
+            )
+        )
     }
 
     private fun defaultErrorResponse(ex: RuntimeException): ErrorResponse {
