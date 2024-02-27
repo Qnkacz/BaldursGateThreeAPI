@@ -3,6 +3,7 @@ package wasik.api.service.exception
 import domain.model.exception.DomainException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import wasik.api.model.exception.ApiException
@@ -25,12 +26,23 @@ class GlobalExceptionHandler(
             is DomainException -> handleDomainException(ex)
             is ApiException -> handleApiException(ex)
             is InfrastructureException -> handleInfraStructureException(ex)
-            else -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(defaultErrorResponse())
+            else -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(defaultErrorResponse(ex))
         }
     }
 
-    private fun defaultErrorResponse(): ErrorResponse {
-        return ErrorResponse(code = "Unknown", message = "Unknown error occured")
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleConstraintValidationExceptions(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
+        val incorrectFields = ex.bindingResult.fieldErrors.joinToString(separator = " and ") { it.field }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            ErrorResponse(
+                code = "Parameter constraints",
+                message = "The following fields were not filled in correctly: $incorrectFields"
+            )
+        )
+    }
+
+    private fun defaultErrorResponse(ex: RuntimeException): ErrorResponse {
+        return ErrorResponse(code = "Unknown", message = ex.message!!)
     }
 
     private fun handleApiException(ex: ApiException): ResponseEntity<ErrorResponse> {

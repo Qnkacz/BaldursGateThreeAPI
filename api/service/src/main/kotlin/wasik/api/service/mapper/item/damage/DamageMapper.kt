@@ -3,7 +3,7 @@ package wasik.api.service.mapper.item.damage
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import org.springframework.stereotype.Component
-import wasik.api.model.model.damage.Damage
+import wasik.api.model.model.Damage
 import domain.model.damage.Damage as DomainDamage
 
 @Component
