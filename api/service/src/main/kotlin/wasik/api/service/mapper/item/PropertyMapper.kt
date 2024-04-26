@@ -6,7 +6,11 @@ import domain.model.misc.Property as DomainProperty
 
 @Component
 class PropertyMapper {
-    suspend fun mapToProperty(property: Property): DomainProperty {
+    fun mapToProperty(property: Property): DomainProperty {
         return DomainProperty(property.name, property.description)
+    }
+
+    fun mapToApiProperty(property: DomainProperty): Property {
+        return Property(property.name, property.description)
     }
 }
