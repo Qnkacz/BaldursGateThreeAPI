@@ -6,7 +6,11 @@ import domain.model.misc.Action as DomainAction
 
 @Component
 class ActionMapper {
-    suspend fun mapToAction(action: Action): DomainAction {
+    fun mapToAction(action: Action): DomainAction {
         return DomainAction(action.name, action.description)
+    }
+
+    fun mapToApiAction(action: DomainAction): Action {
+        return Action(action.name, action.description)
     }
 }

@@ -40,6 +40,6 @@ interface WeaponRestResource {
             ),
         ]
     )
-    suspend fun getWeaponByName(@Parameter(description = "Name of the weapon") name: String): ResponseEntity<Weapon>
+    suspend fun getWeaponByName(@Parameter(description = "Name of the weapon") name: String): ResponseEntity<List<Weapon>>
     suspend fun postWeapon(@Parameter weapon: Weapon): ResponseEntity<Void>
 }

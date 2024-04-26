@@ -24,7 +24,7 @@ class WeaponValidator {
         WeaponClass.SHORTBOW,
     )
 
-    suspend fun validate(weapon: Weapon) {
+    suspend fun validateWeapon(weapon: Weapon) {
         coroutineScope {
             val validations = mutableListOf(
                 async { validateDamage(weapon.damage) },
@@ -38,6 +38,19 @@ class WeaponValidator {
                 validations.add(async { validateMeleeWeaponClasses(weapon.weaponClass) })
             }
             validations.awaitAll()
+        }
+    }
+
+    fun validateName(name: String) {
+        validateWeaponLength(name)
+    }
+
+    private fun validateWeaponLength(name: String) {
+        if (name.length in 51 downTo 1) {
+            throw DomainException(
+                type = VALIDATION_ERROR,
+                message = "Provided weapon name length must be between 1 and 50 characters"
+            )
         }
     }
 
@@ -62,7 +75,7 @@ class WeaponValidator {
     }
 
     private fun validateProperties(properties: Set<Property>) {
-        val maxAllowed = 3;
+        val maxAllowed = 3
         if (properties.count() > maxAllowed) {
             throw DomainException(type = VALIDATION_ERROR, message = "A weapon must have at most 3 actions")
         }

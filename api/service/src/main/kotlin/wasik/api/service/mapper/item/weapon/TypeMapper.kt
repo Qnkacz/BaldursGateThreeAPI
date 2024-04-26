@@ -8,8 +8,8 @@ import domain.model.item.weapon.WeaponType as DomainWeaponType
 
 @Component
 class TypeMapper {
-    suspend fun mapToType(weaponType: WeaponType): DomainWeaponType {
-        return when(weaponType) {
+    fun mapToType(weaponType: WeaponType): DomainWeaponType {
+        return when (weaponType) {
             WeaponType.MELEE, WeaponType.TWO_HANDED_MELEE -> DomainWeaponType.MELEE
             WeaponType.VERSATILE -> DomainWeaponType.VERSATILE
             WeaponType.TWO_HANDED_RANGED, WeaponType.RANGED -> DomainWeaponType.RANGED

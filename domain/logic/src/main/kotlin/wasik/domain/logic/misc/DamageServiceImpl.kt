@@ -1,36 +1,30 @@
 package wasik.domain.logic.misc
 
+import domain.model.damage.Damage
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
-import domain.model.damage.Damage
-import domain.model.misc.Action
+import kotlinx.coroutines.future.await
+import org.jetbrains.exposed.dao.id.EntityID
 import org.springframework.stereotype.Service
-import wasik.domain.logic.items.mapper.DamageInfrastructureMapper
-import wasik.infrastructure.model.entity.DamageEntity
 import wasik.infrastructure.logic.repository.DamageRepository
 
 @Service
 class DamageServiceImpl(
-    private val damageInfrastructureMapper: DamageInfrastructureMapper,
     private val damageRepository: DamageRepository
 ) : DamageService {
     override suspend fun postDamage(damage: Damage) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun postDamages(damages: Collection<Damage>): Flow<DamageEntity> = coroutineScope {
-        val weaponDamage = damages.map {
-            async {
-                damageInfrastructureMapper.mapToDamageEntity(it)
-            }
+    override suspend fun postDamages(damages: Collection<Damage>): List<EntityID<Long>> = coroutineScope {
+        damages.map { damage: Damage ->
+            async { damageRepository.save(damage).await() }
         }.awaitAll()
-        return@coroutineScope damageRepository.saveAll(weaponDamage)
     }
 
-    override suspend fun getDamage(name: String): Action {
-        TODO("Not yet implemented")
+    override suspend fun getDamageById(id: Long): Damage = coroutineScope {
+        damageRepository.findById(id).await()
     }
 
     override suspend fun updateDamage(damage: Damage): Damage {
