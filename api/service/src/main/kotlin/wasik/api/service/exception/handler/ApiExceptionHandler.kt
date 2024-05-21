@@ -14,7 +14,7 @@ class ApiExceptionHandler : ExceptionHandler<ApiException> {
     }
 
     override fun getResponseStatus(exception: ApiException): HttpStatus {
-        return when(exception.type) {
+        return when (exception.type) {
             AUTHORIZATION_ERROR -> HttpStatus.FORBIDDEN
             MAPPING_ERROR -> HttpStatus.BAD_REQUEST
         }

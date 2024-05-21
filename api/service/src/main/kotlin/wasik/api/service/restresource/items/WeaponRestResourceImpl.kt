@@ -2,6 +2,7 @@ package wasik.api.service.restresource.items
 
 import jakarta.validation.Valid
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -14,8 +15,14 @@ import wasik.domain.logic.items.WeaponService
 open class WeaponRestResourceImpl(private val weaponMapper: WeaponMapper, private val weaponService: WeaponService) :
     WeaponRestResource {
     @GetMapping("/{name}")
-    override suspend fun getWeaponByName(@PathVariable name: String): ResponseEntity<Weapon> {
-        return ResponseEntity.ok(null)
+    override suspend fun getWeaponByName(@PathVariable name: String): ResponseEntity<List<Weapon>> = coroutineScope {
+        val foundWeapons = weaponService.getWeaponByName(name).map {
+            async {
+                weaponMapper.mapToWeaponResponse(it)
+            }
+        }
+            .awaitAll()
+        ResponseEntity.ok(foundWeapons)
     }
 
     @PostMapping

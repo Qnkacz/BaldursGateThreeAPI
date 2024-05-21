@@ -5,9 +5,10 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
-import wasik.api.model.ItemInterface
+import wasik.api.model.ItemCommonData
 import wasik.api.model.Property
 import wasik.api.model.item.ItemRarity
+import wasik.api.model.item.weapon.WeaponClass
 import wasik.api.model.model.Damage
 
 @Schema(description = "Model for weapons used in Baldur's Gate 3")
@@ -58,4 +59,4 @@ data class Weapon(
     @field:Schema(required = true)
     @field:NotBlank
     override val description: String
-) : ItemInterface
+) : ItemCommonData(description, name, rarity, weight, value)

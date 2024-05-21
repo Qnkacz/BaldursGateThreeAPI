@@ -10,6 +10,7 @@ interface ExceptionHandler<T : Throwable> {
     fun getResponseInfo(exception: T): Pair<ErrorResponse, HttpStatus>
 
     fun getResponseStatus(exception: T): HttpStatus
+
     /* Hi me from the future,
     *  For now I'm gonna implement Error responses to take the Exception type and simple convert it to a string
     *   In the future, you might want to create a map of ENUM to CODE (a new type)
