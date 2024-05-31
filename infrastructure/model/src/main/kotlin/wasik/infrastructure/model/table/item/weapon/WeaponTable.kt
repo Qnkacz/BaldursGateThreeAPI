@@ -13,4 +13,5 @@ object WeaponTable : LongIdTable("weapons") {
     val handType = integer("hand_type")
     val type = integer("type")
     val upgrade = integer("upgrade")
+    val range = float("range")
 }

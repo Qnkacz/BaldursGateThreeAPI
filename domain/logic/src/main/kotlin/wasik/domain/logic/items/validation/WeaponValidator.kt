@@ -3,7 +3,7 @@ package wasik.domain.logic.items.validation
 import domain.model.damage.Damage
 import domain.model.exception.DomainException
 import domain.model.exception.DomainExceptionType.VALIDATION_ERROR
-import domain.model.item.weapon.Weapon
+import domain.model.item.weapon.WeaponCommand
 import domain.model.item.weapon.WeaponClass
 import domain.model.item.weapon.WeaponType
 import domain.model.misc.Action
@@ -24,18 +24,19 @@ class WeaponValidator {
         WeaponClass.SHORTBOW,
     )
 
-    suspend fun validateWeapon(weapon: Weapon) {
+    suspend fun validateWeapon(weaponCommand: WeaponCommand) {
         coroutineScope {
             val validations = mutableListOf(
-                async { validateDamage(weapon.damage) },
-                async { validateActions(weapon.actions) },
-                async { validateProperties(weapon.properties) },
+                async { validateDamage(weaponCommand.damage) },
+                async { validateActions(weaponCommand.actions) },
+                async { validateProperties(weaponCommand.properties) },
+                async { validateRange(weaponCommand.range)}
             )
-            if (weapon.type == WeaponType.RANGED) {
-                validations.add(async { validateRangedWeaponClasses(weapon.weaponClass) })
+            if (weaponCommand.type == WeaponType.RANGED) {
+                validations.add(async { validateRangedWeaponClasses(weaponCommand.weaponClass) })
             }
-            if (weapon.type == WeaponType.MELEE) {
-                validations.add(async { validateMeleeWeaponClasses(weapon.weaponClass) })
+            if (weaponCommand.type == WeaponType.MELEE) {
+                validations.add(async { validateMeleeWeaponClasses(weaponCommand.weaponClass) })
             }
             validations.awaitAll()
         }
@@ -45,8 +46,17 @@ class WeaponValidator {
         validateWeaponLength(name)
     }
 
+    private fun validateRange(range: Float) {
+        if (range in 1f..100f) {
+            throw DomainException(
+                type = VALIDATION_ERROR,
+                message = "Provided weapon range must be between 1 and 100"
+            )
+        }
+    }
+
     private fun validateWeaponLength(name: String) {
-        if (name.length in 51 downTo 1) {
+        if (name.length !in 51 downTo 1) {
             throw DomainException(
                 type = VALIDATION_ERROR,
                 message = "Provided weapon name length must be between 1 and 50 characters"

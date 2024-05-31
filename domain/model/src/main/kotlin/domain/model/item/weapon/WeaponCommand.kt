@@ -5,7 +5,7 @@ import domain.model.item.CommonItemData
 import domain.model.misc.Action
 import domain.model.misc.Property
 
-data class Weapon(
+data class WeaponCommand(
     val commonData: CommonItemData,
     val weaponClass: WeaponClass,
     val proficiency: WeaponProficiency,
@@ -13,5 +13,6 @@ data class Weapon(
     val properties: Set<Property>,
     val actions: Set<Action>,
     val type: WeaponType,
-    val damage: Set<Damage>
+    val damage: Set<Damage>,
+    val range: Float
 )
