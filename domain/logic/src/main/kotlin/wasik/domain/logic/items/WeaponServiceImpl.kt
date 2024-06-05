@@ -5,6 +5,7 @@ import domain.model.item.weapon.WeaponCommand
 import domain.model.misc.Action
 import domain.model.misc.Property
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.future.await
 import org.jetbrains.exposed.dao.id.EntityID
@@ -39,31 +40,62 @@ class WeaponServiceImpl(
     override suspend fun getWeaponByName(name: String): List<WeaponCommand> = coroutineScope {
         weaponValidator.validateName(name)
         val listOfPairs = weaponRepository.findByName(name).await()
-        val ids: List<EntityID<Long>> = listOfPairs.map { it.first }
+        val weaponCommands: List<WeaponCommand> = listOfPairs.map {
+            addMissingWeaponProperties(it.first, it.second)
+        }.toList()
 
-        //do for one and then make it a loop
-        val firstId = ids.get(0)
-        val singleWeaponCommand = listOfPairs.map { it.second }.get(0)
-        val actionId: EntityID<Long> = weaponRepository.getWeaponActionsIds(firstId).await().get(0)
-        val damageId: EntityID<Long> = weaponRepository.getWeaponDamagesIds(firstId).await().get(0)
-        val propertyId: EntityID<Long> = weaponRepository.getWeaponPropertiesIds(firstId).await().get(0)
-
-        //services
-        val damageById: Damage = damageService.getDamageById(damageId.value)
-        val property: Property = propertyService.getProperty(propertyId.value)
-        val action: Action = actionService.getAction(actionId.value)
-
-        // TODO need to create it, maybe builder instead of data class?
-        singleWeaponCommand.damage(damageById)
-        singleWeaponCommand.actions(action)
-        singleWeaponCommand.properties(property)
-
-
-        return@coroutineScope listOf(singleWeaponCommand.build())
+        return@coroutineScope weaponCommands
     }
 
 
     override suspend fun updateWeapon(name: String, weaponCommand: WeaponCommand) {
         TODO("Not yet implemented")
+    }
+
+    private suspend fun addMissingWeaponProperties(
+        weaponId: EntityID<Long>,
+        weaponCommandBuilder: WeaponCommand.Builder
+    ): WeaponCommand =
+        coroutineScope {
+
+            val weaponDamages = async { getWeaponDamages(weaponId) }
+            val weaponActions = async { getWeaponActions(weaponId) }
+            val weaponProperties = async { getWeaponProperties(weaponId) }
+            val result = awaitAll(weaponDamages, weaponActions, weaponProperties)
+            weaponCommandBuilder.damage(result[0] as List<Damage>)
+            weaponCommandBuilder.actions(result[1] as List<Action>)
+            weaponCommandBuilder.properties(result[2] as List<Property>)
+
+            return@coroutineScope weaponCommandBuilder.build()
+        }
+
+    private suspend fun getWeaponActions(weaponId: EntityID<Long>): List<Action> = coroutineScope {
+        val actionIds: List<EntityID<Long>> = weaponRepository.getWeaponActionsIds(weaponId).await()
+        val weaponActions: List<Action> = actionIds.map {
+            async {
+                actionService.getAction(it.value)
+            }
+        }.awaitAll()
+        return@coroutineScope weaponActions
+    }
+
+    private suspend fun getWeaponProperties(weaponId: EntityID<Long>): List<Property> = coroutineScope {
+        val propertyIds: List<EntityID<Long>> = weaponRepository.getWeaponPropertiesIds(weaponId).await()
+        val weaponProperties: List<Property> = propertyIds.map {
+            async {
+                propertyService.getProperty(it.value)
+            }
+        }.awaitAll()
+        return@coroutineScope weaponProperties
+    }
+
+    private suspend fun getWeaponDamages(weaponId: EntityID<Long>): List<Damage> = coroutineScope {
+        val damageIds: List<EntityID<Long>> = weaponRepository.getWeaponDamagesIds(weaponId).await()
+        val weaponDamages: List<Damage> = damageIds.map {
+            async {
+                damageService.getDamageById(it.value)
+            }
+        }.awaitAll()
+        return@coroutineScope weaponDamages
     }
 }

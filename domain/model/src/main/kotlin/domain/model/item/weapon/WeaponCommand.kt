@@ -16,11 +16,6 @@ data class WeaponCommand (
     val damage: Set<Damage>,
     val range: Float
 ) {
-
-    companion object {
-        inline fun build(block: Builder.() -> Unit) = Builder().apply(block).build()
-    }
-
     class Builder {
         private var commonData: CommonItemData? = null
         private var weaponClass: WeaponClass? = null
@@ -36,10 +31,10 @@ data class WeaponCommand (
         fun weaponClass(weaponClass: WeaponClass) = apply { this.weaponClass = weaponClass }
         fun proficiency(proficiency: WeaponProficiency) = apply { this.proficiency = proficiency }
         fun handType(handType: HandType) = apply { this.handType = handType }
-        fun properties(vararg properties: Property) = apply { this.properties.addAll(properties) }
-        fun actions(vararg actions: Action) = apply { this.actions.addAll(actions) }
+        fun properties(properties: List<Property>) = apply { this.properties.addAll(properties) }
+        fun actions(actions: List<Action>) = apply { this.actions.addAll(actions) }
         fun type(type: WeaponType) = apply { this.type = type }
-        fun damage(vararg damage: Damage) = apply { this.damage.addAll(damage) }
+        fun damage(damage: List<Damage>) = apply { this.damage.addAll(damage) }
         fun range(range: Float) = apply { this.range = range }
 
         fun build() = WeaponCommand(

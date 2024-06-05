@@ -18,7 +18,7 @@ class DamageInfrastructureMapper {
     }
 
     suspend fun damageToString(dieType: DieType, dieAmount: Int) = coroutineScope {
-        return@coroutineScope "$${dieAmount}$SEPARATOR$dieType"
+        return@coroutineScope "${dieAmount}$SEPARATOR$dieType"
     }
 
     private fun fromString(damageString: String): Pair<Int, DieType> {

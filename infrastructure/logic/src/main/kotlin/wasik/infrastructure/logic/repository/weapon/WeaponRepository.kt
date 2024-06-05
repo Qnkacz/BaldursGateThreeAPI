@@ -8,7 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
@@ -55,20 +54,6 @@ open class WeaponRepository {
         return result
     }
 
-    fun findAll(): CompletableFuture<List<Pair<EntityID<Long>, WeaponCommand.Builder>>> {
-        val result = CompletableFuture<List<Pair<EntityID<Long>, WeaponCommand.Builder>>>()
-        CoroutineScope(Dispatchers.IO).launch {
-            transaction {
-                val weapons = WeaponTable
-                    .selectAll()
-                    .map { Pair(it[WeaponTable.id], mapToWeapon(it)) }
-                result.complete(weapons)
-            }
-        }
-        return result
-    }
-
-
     fun findByName(name: String): CompletableFuture<List<Pair<EntityID<Long>, WeaponCommand.Builder>>> {
         val result = CompletableFuture<List<Pair<EntityID<Long>, WeaponCommand.Builder>>>()
         CoroutineScope(Dispatchers.IO).launch {
@@ -82,7 +67,6 @@ open class WeaponRepository {
         }
         return result
     }
-
 
     fun saveWeaponActions(actionIdList: List<EntityID<Long>>, savedWeaponId: EntityID<Long>?) {
         actionIdList.forEach { action ->
@@ -152,7 +136,8 @@ open class WeaponRepository {
         CoroutineScope(Dispatchers.IO).launch {
             transaction {
                 val actionIds = WeaponActionTable
-                    .select(WeaponActionTable.weaponId eq weaponId.value)
+                    .selectAll()
+                    .where { WeaponActionTable.weaponId eq weaponId.value }
                     .map { it[WeaponActionTable.actionId] }
 
                 if (actionIds.isEmpty()) {
@@ -171,17 +156,6 @@ open class WeaponRepository {
         val handType: Int = it[WeaponTable.handType]
         val proficiency: Int = it[WeaponTable.proficiency]
         val range = it[WeaponTable.range]
-//        return WeaponCommand.Builder(
-//            commonData = mapCommonItemData(it, rarity),
-//            damage = setOf(), //TODO NEED WORK
-//            weaponClass = WeaponClass.entries[weaponClass],
-//            type = WeaponType.entries[weaponType],
-//            properties = setOf(), //TODO NEED WORK
-//            handType = HandType.entries[handType],
-//            proficiency = WeaponProficiency.entries[proficiency],
-//            actions = setOf(), //TODO NEED WORK
-//            range = it[WeaponTable.range]
-//        )
 
         return WeaponCommand.Builder()
             .commonData(mapCommonItemData(it, rarity))
