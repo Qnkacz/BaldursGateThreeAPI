@@ -2,9 +2,9 @@ package wasik.api.model.model.weapon
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.Valid
-import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Positive
 import wasik.api.model.ItemCommonData
 import wasik.api.model.Property
 import wasik.api.model.item.ItemRarity
@@ -34,6 +34,7 @@ data class Weapon(
         example = "1,5"
     )
     @field:NotNull
+    @field:Positive
     val range: Float,
     @field:Schema(
         description = "Weight of the item",
@@ -41,14 +42,15 @@ data class Weapon(
         example = "50,9"
     )
     @field:NotNull
+    @field:Positive
     override val weight: Float,
     @field:Schema(
         description = "Item value",
         required = true,
         example = "33,6"
     )
-    @Min(0)
     @field:NotNull
+    @field:Positive
     override val value: Float,
     @field:Valid
     val damage: Set<Damage>,

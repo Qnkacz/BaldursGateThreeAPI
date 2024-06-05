@@ -39,10 +39,10 @@ class WeaponServiceImpl(
 
     override suspend fun getWeaponByName(name: String): List<WeaponCommand> = coroutineScope {
         weaponValidator.validateName(name)
-        val listOfPairs = weaponRepository.findByName(name).await()
-        val weaponCommands: List<WeaponCommand> = listOfPairs.map {
-            addMissingWeaponProperties(it.first, it.second)
-        }.toList()
+        val idWeaponPairs = weaponRepository.findByName(name).await()
+        val weaponCommands: List<WeaponCommand> = idWeaponPairs.map {
+            async { addMissingWeaponProperties(it.first, it.second) }
+        }.awaitAll()
 
         return@coroutineScope weaponCommands
     }
@@ -57,15 +57,13 @@ class WeaponServiceImpl(
         weaponCommandBuilder: WeaponCommand.Builder
     ): WeaponCommand =
         coroutineScope {
-
             val weaponDamages = async { getWeaponDamages(weaponId) }
             val weaponActions = async { getWeaponActions(weaponId) }
             val weaponProperties = async { getWeaponProperties(weaponId) }
             val result = awaitAll(weaponDamages, weaponActions, weaponProperties)
-            weaponCommandBuilder.damage(result[0] as List<Damage>)
-            weaponCommandBuilder.actions(result[1] as List<Action>)
-            weaponCommandBuilder.properties(result[2] as List<Property>)
-
+            weaponCommandBuilder.damage(result[0].filterIsInstance<Damage>())
+            weaponCommandBuilder.actions(result[1].filterIsInstance<Action>())
+            weaponCommandBuilder.properties(result[2].filterIsInstance<Property>())
             return@coroutineScope weaponCommandBuilder.build()
         }
 

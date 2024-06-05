@@ -1,6 +1,7 @@
 package wasik.api.service.exception
 
 import domain.model.exception.DomainException
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -19,6 +20,8 @@ class GlobalExceptionHandler(
     private val domainExceptionHandler: DomainExceptionHandler,
     private val infrastructureExceptionHandler: InfrastructureExceptionHandler
 ) {
+
+    private val logger = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
 
     @ExceptionHandler(RuntimeException::class)
     fun handleRuntimeExceptions(ex: RuntimeException): ResponseEntity<ErrorResponse> {
@@ -42,6 +45,7 @@ class GlobalExceptionHandler(
     }
 
     private fun defaultErrorResponse(ex: RuntimeException): ErrorResponse {
+        logger.error(ex.message, ex)
         return ErrorResponse(code = "Unknown", message = ex.message!!)
     }
 
