@@ -35,6 +35,7 @@ class GlobalExceptionHandler(
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleConstraintValidationExceptions(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
+        logger.error(ex.message, ex)
         val incorrectFields = ex.bindingResult.fieldErrors.joinToString(separator = " and ") { it.field }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             ErrorResponse(
