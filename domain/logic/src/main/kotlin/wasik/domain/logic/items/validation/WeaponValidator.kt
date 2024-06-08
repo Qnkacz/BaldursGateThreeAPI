@@ -47,7 +47,7 @@ class WeaponValidator {
     }
 
     private fun validateRange(range: Float) {
-        if (range in 1f..100f) {
+        if (range !in 1f..100f) {
             throw DomainException(
                 type = VALIDATION_ERROR,
                 message = "Provided weapon range must be between 1 and 100"

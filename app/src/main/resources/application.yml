@@ -1,4 +1,9 @@
+logging:
+  level:
+    web: debug
 spring:
+  application:
+    name: BaldursGateThreeAPI
   datasource:
     url: jdbc:postgresql://localhost:5432/mydatabase
     username: myuser #{DATABASE_USERNAME}
