@@ -2,6 +2,7 @@ package wasik.api.service.mapper.item.weapon
 
 import domain.model.damage.Damage
 import domain.model.item.weapon.HandType
+import domain.model.item.weapon.WeaponCommand
 import domain.model.item.weapon.WeaponType
 import domain.model.misc.Property
 import kotlinx.coroutines.async
@@ -12,7 +13,6 @@ import wasik.api.model.model.weapon.Weapon
 import wasik.api.service.mapper.item.CommonItemDataMapper
 import wasik.api.service.mapper.item.PropertyMapper
 import wasik.api.service.mapper.item.damage.DamageMapper
-import domain.model.item.weapon.Weapon as DomainWeaponModel
 import wasik.api.model.model.Damage as ApiWeaponDamage
 import wasik.api.model.model.weapon.WeaponType as ApiWeaponType
 
@@ -27,7 +27,7 @@ class WeaponMapper(
     private val propertyMapper: PropertyMapper,
     private val damageMapper: DamageMapper
 ) {
-    suspend fun mapToWeapon(weapon: Weapon): DomainWeaponModel = coroutineScope {
+    suspend fun mapToWeaponCommand(weapon: Weapon): WeaponCommand = coroutineScope {
         val commonItemData = async { commonItemDataMapper.mapToCommonItemInfo(weapon) }
         val weaponClass = async { classMapper.mapToClass(weapon.weaponClass) }
         val handType = async { handTypeMapper.mapToHandType(weapon.type) }
@@ -54,7 +54,7 @@ class WeaponMapper(
                 }
             }
             .awaitAll()
-        DomainWeaponModel(
+        WeaponCommand(
             commonData = commonItemData.await(),
             weaponClass = weaponClass.await(),
             proficiency = proficiency.await(),
@@ -62,31 +62,32 @@ class WeaponMapper(
             damage = damage.toSet(),
             actions = actions.toSet(),
             handType = handType.await(),
-            properties = properties.toSet()
+            properties = properties.toSet(),
+            range = weapon.range
         )
     }
 
-    suspend fun mapToWeaponResponse(weapon: DomainWeaponModel): Weapon = coroutineScope {
+    suspend fun mapToWeaponResponse(weaponCommand: WeaponCommand): Weapon = coroutineScope {
 
-        val commonData = async { commonItemDataMapper.mapToApiItemCommonData(weapon.commonData) }
-        val proficiency = async { proficiencyMapper.mapToApiProficiency(weapon.proficiency) }
-        val apiWeaponType = async { mapApiWeaponType(weapon.handType, weapon.type) }
-        val weaponClass = async { classMapper.mapToApiWeaponClass(weapon.weaponClass) }
-        val damage: Collection<ApiWeaponDamage> = weapon.damage
+        val commonData = async { commonItemDataMapper.mapToApiItemCommonData(weaponCommand.commonData) }
+        val proficiency = async { proficiencyMapper.mapToApiProficiency(weaponCommand.proficiency) }
+        val apiWeaponType = async { mapApiWeaponType(weaponCommand.handType, weaponCommand.type) }
+        val weaponClass = async { classMapper.mapToApiWeaponClass(weaponCommand.weaponClass) }
+        val damage: Collection<ApiWeaponDamage> = weaponCommand.damage
             .map {
                 async {
                     damageMapper.mapToApiDamage(it)
                 }
             }
             .awaitAll()
-        val actions = weapon.actions
+        val actions = weaponCommand.actions
             .map {
                 async {
                     actionMapper.mapToApiAction(it)
                 }
             }
             .awaitAll()
-        val properties = weapon.properties
+        val properties = weaponCommand.properties
             .map {
                 async {
                     propertyMapper.mapToApiProperty(it)
@@ -99,7 +100,7 @@ class WeaponMapper(
             proficiency = proficiency.await(),
             type = apiWeaponType.await(),
             weaponClass = weaponClass.await(),
-            range = 0f, //TODO BW RANGE IS IGNORED
+            range = weaponCommand.range,
             weight = commonData.await().weight,
             value = commonData.await().value,
             damage = damage.toSet(),

@@ -4,8 +4,6 @@ import org.springframework.http.HttpStatus
 import wasik.api.model.exception.ErrorResponse
 
 interface ExceptionHandler<T : Throwable> {
-    val DEFAULT_EXCEPTION_MESSAGE: String
-        get() = "Default error message"
 
     fun getResponseInfo(exception: T): Pair<ErrorResponse, HttpStatus>
 
@@ -20,4 +18,9 @@ interface ExceptionHandler<T : Throwable> {
     *   The user doesn't really need to know the exact enum
     * */
     fun mapErrorData(exception: T): ErrorResponse
+
+    companion object {
+        val DEFAULT_EXCEPTION_MESSAGE: String
+            get() = "Default error message"
+    }
 }

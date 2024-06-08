@@ -24,21 +24,22 @@ import java.util.concurrent.CompletableFuture
 @Repository
 open class WeaponRepository {
 
-    fun saveWeapon(weapon: Weapon): CompletableFuture<EntityID<Long>> {
+    fun saveWeapon(weaponCommand: WeaponCommand): CompletableFuture<EntityID<Long>> {
         val result = CompletableFuture<EntityID<Long>>()
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 transaction {
                     val insertAndGetId: EntityID<Long> = WeaponTable.insertAndGetId {
-                        it[name] = weapon.commonData.name
-                        it[rarity] = weapon.commonData.rarity.ordinal
-                        it[value] = weapon.commonData.value
-                        it[weight] = weapon.commonData.weight
-                        it[description] = weapon.commonData.description
-                        it[weaponClass] = weapon.weaponClass.ordinal
-                        it[proficiency] = weapon.proficiency.ordinal
-                        it[handType] = weapon.handType.ordinal
-                        it[type] = weapon.type.ordinal
+                        it[name] = weaponCommand.commonData.name
+                        it[rarity] = weaponCommand.commonData.rarity.ordinal
+                        it[value] = weaponCommand.commonData.value
+                        it[weight] = weaponCommand.commonData.weight
+                        it[description] = weaponCommand.commonData.description
+                        it[weaponClass] = weaponCommand.weaponClass.ordinal
+                        it[proficiency] = weaponCommand.proficiency.ordinal
+                        it[handType] = weaponCommand.handType.ordinal
+                        it[type] = weaponCommand.type.ordinal
+                        it[range] = weaponCommand.range
                         it[upgrade] = 69
                     }
                     result.complete(insertAndGetId)
@@ -53,20 +54,19 @@ open class WeaponRepository {
         return result
     }
 
-    fun findAll(): CompletableFuture<List<Weapon>> {
-        val result = CompletableFuture<List<Weapon>>()
+    fun findByName(name: String): CompletableFuture<List<Pair<EntityID<Long>, WeaponCommand.Builder>>> {
+        val result = CompletableFuture<List<Pair<EntityID<Long>, WeaponCommand.Builder>>>()
         CoroutineScope(Dispatchers.IO).launch {
             transaction {
                 val weapons = WeaponTable
                     .selectAll()
-                    .map { mapToWeapon(it) }
-
+                    .where { WeaponTable.name eq name }
+                    .map { Pair(it[WeaponTable.id], mapToWeapon(it)) }
                 result.complete(weapons)
             }
         }
         return result
     }
-
 
     fun saveWeaponActions(actionIdList: List<EntityID<Long>>, savedWeaponId: EntityID<Long>?) {
         actionIdList.forEach { action ->
@@ -95,38 +95,75 @@ open class WeaponRepository {
         }
     }
 
-    fun findById(id: Long): CompletableFuture<Weapon> {
-        val result = CompletableFuture<Weapon>()
+    fun getWeaponDamagesIds(weaponId: EntityID<Long>): CompletableFuture<List<EntityID<Long>>> {
+        val result = CompletableFuture<List<EntityID<Long>>>()
         CoroutineScope(Dispatchers.IO).launch {
             transaction {
-                val weapon: Weapon? = WeaponTable.selectAll().where { WeaponTable.id eq id }.firstOrNull()?.let {
-                    mapToWeapon(it)
+                val damageIds = WeaponDamageTable
+                    .selectAll()
+                    .where { WeaponDamageTable.weaponId eq weaponId.value }
+                    .map { it[WeaponDamageTable.damageId] }
+
+                if (damageIds.isEmpty()) {
+                    result.complete(listOf())
                 }
-                if (weapon == null) {
-                    throw NullPointerException("Damage with id $id not found")
-                }
-                result.complete(weapon)
+                result.complete(damageIds)
             }
         }
         return result
     }
 
-    private fun mapToWeapon(it: ResultRow): Weapon {
+    fun getWeaponPropertiesIds(weaponId: EntityID<Long>): CompletableFuture<List<EntityID<Long>>> {
+        val result = CompletableFuture<List<EntityID<Long>>>()
+        CoroutineScope(Dispatchers.IO).launch {
+            transaction {
+                val propertyIds = WeaponPropertyTable
+                    .selectAll()
+                    .where { WeaponPropertyTable.weaponId eq weaponId.value }
+                    .map { it[WeaponPropertyTable.propertyId] }
+
+                if (propertyIds.isEmpty()) {
+                    result.complete(listOf())
+                }
+                result.complete(propertyIds)
+            }
+        }
+        return result
+    }
+
+    fun getWeaponActionsIds(weaponId: EntityID<Long>): CompletableFuture<List<EntityID<Long>>> {
+        val result = CompletableFuture<List<EntityID<Long>>>()
+        CoroutineScope(Dispatchers.IO).launch {
+            transaction {
+                val actionIds = WeaponActionTable
+                    .selectAll()
+                    .where { WeaponActionTable.weaponId eq weaponId.value }
+                    .map { it[WeaponActionTable.actionId] }
+
+                if (actionIds.isEmpty()) {
+                    result.complete(listOf())
+                }
+                result.complete(actionIds)
+            }
+        }
+        return result
+    }
+
+    private fun mapToWeapon(it: ResultRow): WeaponCommand.Builder {
         val rarity: Int = it[WeaponTable.rarity]
         val weaponClass: Int = it[WeaponTable.weaponClass]
         val weaponType: Int = it[WeaponTable.type]
         val handType: Int = it[WeaponTable.handType]
         val proficiency: Int = it[WeaponTable.proficiency]
-        return Weapon(
-            commonData = mapCommonItemData(it, rarity),
-            damage = setOf(),
-            weaponClass = WeaponClass.entries[weaponClass],
-            type = WeaponType.entries[weaponType],
-            properties = setOf(),
-            handType = HandType.entries[handType],
-            proficiency = WeaponProficiency.entries[proficiency],
-            actions = setOf()
-        )
+        val range = it[WeaponTable.range]
+
+        return WeaponCommand.Builder()
+            .commonData(mapCommonItemData(it, rarity))
+            .weaponClass(WeaponClass.entries[weaponClass])
+            .type(WeaponType.entries[weaponType])
+            .handType(HandType.entries[handType])
+            .proficiency(WeaponProficiency.entries[proficiency])
+            .range(range)
     }
 
     private fun mapCommonItemData(

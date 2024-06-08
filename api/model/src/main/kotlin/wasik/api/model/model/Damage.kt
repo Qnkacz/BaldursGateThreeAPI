@@ -13,7 +13,7 @@ data class Damage(
     val damageType: DamageType,
     @field:Schema(description = "How many dice of the type are needed", required = true)
     @field:NotNull
-    @field:Range(min = 0, max = 3)
+    @field:Range(min = 1, max = 3)
     val dieAmount: Int,
     @field:Schema(required = true)
     val dieType: DieType,
