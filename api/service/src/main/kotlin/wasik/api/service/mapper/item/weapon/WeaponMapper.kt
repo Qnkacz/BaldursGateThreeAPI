@@ -14,7 +14,7 @@ import wasik.api.service.mapper.item.CommonItemDataMapper
 import wasik.api.service.mapper.item.PropertyMapper
 import wasik.api.service.mapper.item.damage.DamageMapper
 import wasik.api.model.model.Damage as ApiWeaponDamage
-import wasik.api.model.model.weapon.WeaponType as ApiWeaponType
+import wasik.api.model.item.weapon.WeaponType as ApiWeaponType
 
 @Component
 class WeaponMapper(

@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull
 import org.hibernate.validator.constraints.Range
 import wasik.api.model.DieType
-import wasik.api.model.model.damage.DamageType
+import wasik.api.model.damage.DamageType
 
 @Schema(description = "Damage description of items, and spells")
 data class Damage(

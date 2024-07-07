@@ -3,7 +3,7 @@ package wasik.api.service.mapper.item.damage
 import org.springframework.stereotype.Component
 import wasik.api.model.exception.ApiException
 import wasik.api.model.exception.ApiExceptionType
-import wasik.api.model.model.damage.DamageType
+import wasik.api.model.damage.DamageType
 import domain.model.damage.DamageType as DomainDamageType
 
 @Component
