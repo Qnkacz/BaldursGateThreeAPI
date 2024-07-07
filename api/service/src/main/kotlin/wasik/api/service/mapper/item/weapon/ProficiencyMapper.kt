@@ -3,7 +3,7 @@ package wasik.api.service.mapper.item.weapon
 import org.springframework.stereotype.Component
 import wasik.api.model.exception.ApiException
 import wasik.api.model.exception.ApiExceptionType
-import wasik.api.model.model.weapon.WeaponProficiency
+import wasik.api.model.item.weapon.WeaponProficiency
 import domain.model.item.weapon.WeaponProficiency as DomainProficiency
 
 @Component

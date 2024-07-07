@@ -4,7 +4,7 @@ import domain.model.item.weapon.HandType
 import org.springframework.stereotype.Component
 import wasik.api.model.exception.ApiException
 import wasik.api.model.exception.ApiExceptionType
-import wasik.api.model.model.weapon.WeaponType
+import wasik.api.model.item.weapon.WeaponType
 
 @Component
 class HandTypeMapper {

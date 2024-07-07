@@ -1,4 +1,4 @@
-package wasik.api.model.model.errors
+package wasik.api.model.errors
 
 import io.swagger.v3.oas.annotations.media.Schema
 

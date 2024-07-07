@@ -1,4 +1,4 @@
-package wasik.api.model.model.weapon
+package wasik.api.model.item.weapon
 
 import io.swagger.v3.oas.annotations.media.Schema
 

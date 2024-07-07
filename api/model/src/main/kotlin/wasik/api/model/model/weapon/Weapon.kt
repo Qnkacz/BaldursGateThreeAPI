@@ -9,6 +9,8 @@ import wasik.api.model.ItemCommonData
 import wasik.api.model.Property
 import wasik.api.model.item.ItemRarity
 import wasik.api.model.item.weapon.WeaponClass
+import wasik.api.model.item.weapon.WeaponProficiency
+import wasik.api.model.item.weapon.WeaponType
 import wasik.api.model.model.Damage
 
 @Schema(description = "Model for weapons used in Baldur's Gate 3")

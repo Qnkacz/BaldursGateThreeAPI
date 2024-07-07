@@ -8,5 +8,4 @@ open class ItemCommonData(
     open val rarity: ItemRarity,
     open val weight: Float,
     open val value: Float
-) {
-}
+)
