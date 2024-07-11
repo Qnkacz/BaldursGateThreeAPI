@@ -3,17 +3,15 @@ package wasik.infrastructure.logic.repository.weapon
 import domain.model.item.CommonItemData
 import domain.model.item.ItemRarity
 import domain.model.item.weapon.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.future.await
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SizedCollection
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
-import wasik.infrastructure.logic.repository.ActionRepository
-import wasik.infrastructure.logic.repository.DamageRepository
-import wasik.infrastructure.logic.repository.PropertyRepository
 import wasik.infrastructure.model.exception.InfrastructureException
 import wasik.infrastructure.model.exception.InfrastructureExceptionType
 import wasik.infrastructure.model.table.ActionEntity
@@ -23,25 +21,13 @@ import wasik.infrastructure.model.table.item.weapon.*
 import java.util.concurrent.CompletableFuture
 
 @Repository
-open class WeaponRepository(
-    private val damageRepository: DamageRepository,
-    private val actionRepository: ActionRepository,
-    private val propertyRepository: PropertyRepository
-) {
+open class WeaponRepository {
 
     fun saveWeapon(weaponCommand: WeaponCommand): CompletableFuture<WeaponEntity> {
         val savedWeaponEntity = CompletableFuture<WeaponEntity>()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val weaponEntity: WeaponEntity = saveWeaponEntity(weaponCommand)
-                val properties: List<PropertyEntity> = savePropertyEntities(weaponCommand)
-                val actions: List<ActionEntity> = saveActionEntities(weaponCommand)
-                val damageList: List<DamageEntity> = saveDamageEntities(weaponCommand)
-                transaction {
-                    weaponEntity.properties = SizedCollection(properties)
-                    weaponEntity.actions = SizedCollection(actions)
-                    weaponEntity.damageEntityList = SizedCollection(damageList)
-                }
+                saveWeaponEntity(weaponCommand, savedWeaponEntity)
             } catch (ex: Exception) {
                 throw InfrastructureException(
                     "Cannot insert property",
@@ -50,6 +36,24 @@ open class WeaponRepository(
             }
         }
         return savedWeaponEntity
+    }
+
+    fun addDamageToWeapon(weaponEntity: WeaponEntity, damageEntityList: List<DamageEntity>) {
+        transaction {
+            weaponEntity.damageEntityList = SizedCollection(damageEntityList)
+        }
+    }
+
+    fun addPropertiesToWeapon(weaponEntity: WeaponEntity, properties: List<PropertyEntity>) {
+        transaction {
+            weaponEntity.properties = SizedCollection(properties)
+        }
+    }
+
+    fun addActionsToWeapon(weaponEntity: WeaponEntity, actions: List<ActionEntity>) {
+        transaction {
+            weaponEntity.actions = SizedCollection(actions)
+        }
     }
 
     fun findByName(name: String): CompletableFuture<List<Pair<EntityID<Long>, WeaponCommand.Builder>>> {
@@ -120,8 +124,11 @@ open class WeaponRepository(
         return result
     }
 
-    private fun saveWeaponEntity(weaponCommand: WeaponCommand): WeaponEntity = transaction {
-        WeaponEntity.new {
+    private fun saveWeaponEntity(
+        weaponCommand: WeaponCommand,
+        savedWeaponEntity: CompletableFuture<WeaponEntity>
+    ): WeaponEntity = transaction {
+        val weaponEntity: WeaponEntity = WeaponEntity.new {
             name = weaponCommand.commonData.name
             rarity = weaponCommand.commonData.rarity.ordinal
             value = weaponCommand.commonData.value
@@ -134,28 +141,9 @@ open class WeaponRepository(
             range = weaponCommand.range
             upgrade = 69
         }
+        savedWeaponEntity.complete(weaponEntity)
+        return@transaction weaponEntity
     }
-
-    private suspend fun savePropertyEntities(weaponCommand: WeaponCommand) =
-        coroutineScope {
-            weaponCommand.properties.map { property ->
-                async { propertyRepository.saveProperty(property).await() }
-            }.awaitAll()
-        }
-
-    private suspend fun saveActionEntities(weaponCommand: WeaponCommand) =
-        coroutineScope {
-            weaponCommand.actions.map { action ->
-                async { actionRepository.saveAction(action).await() }
-            }.awaitAll()
-        }
-
-    private suspend fun saveDamageEntities(weaponCommand: WeaponCommand) =
-        coroutineScope {
-            weaponCommand.damage.map { damage ->
-                async { damageRepository.save(damage).await() }
-            }.awaitAll()
-        }
 
     private fun mapToWeapon(it: ResultRow): WeaponCommand.Builder {
         val rarity: Int = it[WeaponTable.rarity]
