@@ -5,7 +5,7 @@ import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 
-object PropertyTable : LongIdTable(name = "property") {
+object PropertyTable : LongIdTable(name = "properties") {
     val name = text("name")
     val description = text("description")
 }
