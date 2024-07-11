@@ -38,6 +38,6 @@ class WeaponEntity(id: EntityID<Long>) : LongEntity(id) {
     var range: Float by WeaponTable.range
 
     var actions by ActionEntity via WeaponActionTable
-    var damageEntity by DamageEntity via WeaponDamageTable
+    var damageEntityList by DamageEntity via WeaponDamageTable
     var properties by PropertyEntity via WeaponPropertyTable
 }

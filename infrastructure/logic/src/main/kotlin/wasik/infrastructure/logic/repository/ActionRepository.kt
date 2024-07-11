@@ -9,21 +9,22 @@ import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
+import wasik.infrastructure.model.table.ActionEntity
 import wasik.infrastructure.model.table.ActionTable
 import java.util.concurrent.CompletableFuture
 
 @Repository
 open class ActionRepository {
 
-    fun saveAction(action: Action): CompletableFuture<EntityID<Long>> {
-        val result = CompletableFuture<EntityID<Long>>()
+    fun saveAction(action: Action): CompletableFuture<ActionEntity> {
+        val result = CompletableFuture<ActionEntity>()
         CoroutineScope(Dispatchers.IO).launch {
             transaction {
-                val insertAndGetId = ActionTable.insertAndGetId {
-                    it[name] = action.name
-                    it[description] = action.description ?: ""
+                val actionEntity = ActionEntity.new {
+                    name = action.name
+                    description = action.description ?: ""
                 }
-                result.complete(insertAndGetId)
+                result.complete(actionEntity)
             }
         }
         return result

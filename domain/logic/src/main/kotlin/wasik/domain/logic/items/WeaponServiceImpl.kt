@@ -28,13 +28,13 @@ class WeaponServiceImpl(
     override suspend fun postWeapon(weaponCommand: WeaponCommand): Unit = coroutineScope {
         weaponValidator.validateWeapon(weaponCommand)
         val savedWeaponId = weaponRepository.saveWeapon(weaponCommand).await()
-        val savedDamages = async { damageService.postDamages(weaponCommand.damage) }
-        val savedProperties = async { propertyService.postProperties(weaponCommand.properties) }
-        val savedActions = async { actionService.postActions(weaponCommand.actions) }
-
-        weaponRepository.saveWeaponDamages(savedDamages.await(), savedWeaponId)
-        weaponRepository.saveWeaponProperties(savedProperties.await(), savedWeaponId)
-        weaponRepository.saveWeaponActions(savedActions.await(), savedWeaponId)
+//        val savedDamages = async { damageService.postDamages(weaponCommand.damage) }
+//        val savedProperties = async { propertyService.postProperties(weaponCommand.properties) }
+//        val savedActions = async { actionService.postActions(weaponCommand.actions) }
+//
+//        weaponRepository.saveWeaponDamages(savedDamages.await(), savedWeaponId)
+//        weaponRepository.saveWeaponProperties(savedProperties.await(), savedWeaponId)
+//        weaponRepository.saveWeaponActions(savedActions.await(), savedWeaponId)
     }
 
     override suspend fun getWeaponByName(name: String): List<WeaponCommand> = coroutineScope {

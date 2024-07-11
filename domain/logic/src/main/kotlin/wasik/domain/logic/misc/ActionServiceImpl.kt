@@ -8,6 +8,7 @@ import kotlinx.coroutines.future.await
 import org.jetbrains.exposed.dao.id.EntityID
 import org.springframework.stereotype.Service
 import wasik.infrastructure.logic.repository.ActionRepository
+import wasik.infrastructure.model.table.ActionEntity
 
 @Service
 class ActionServiceImpl(
@@ -17,7 +18,7 @@ class ActionServiceImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun postActions(actions: Collection<Action>): List<EntityID<Long>> = coroutineScope {
+    override suspend fun postActions(actions: Collection<Action>): List<ActionEntity> = coroutineScope {
         actions.map { action: Action ->
             async { actionRepository.saveAction(action).await() }
         }.awaitAll()

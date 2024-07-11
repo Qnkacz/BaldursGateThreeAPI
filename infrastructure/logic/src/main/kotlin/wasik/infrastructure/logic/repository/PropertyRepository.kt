@@ -11,22 +11,23 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
 import wasik.infrastructure.model.exception.InfrastructureException
 import wasik.infrastructure.model.exception.InfrastructureExceptionType
+import wasik.infrastructure.model.table.PropertyEntity
 import wasik.infrastructure.model.table.PropertyTable
 import java.util.concurrent.CompletableFuture
 
 @Repository
 open class PropertyRepository {
 
-    fun saveProperty(property: Property): CompletableFuture<EntityID<Long>> {
-        val result = CompletableFuture<EntityID<Long>>()
+    fun saveProperty(property: Property): CompletableFuture<PropertyEntity> {
+        val result = CompletableFuture<PropertyEntity>()
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 transaction {
-                    val insertAndGetId = PropertyTable.insertAndGetId {
-                        it[name] = property.name
-                        it[description] = property.description ?: ""
+                    val propertyEntity = PropertyEntity.new {
+                        name = property.name
+                        description = property.description ?: ""
                     }
-                    result.complete(insertAndGetId)
+                    result.complete(propertyEntity)
                 }
             } catch (ex: Exception) {
                 throw InfrastructureException(
