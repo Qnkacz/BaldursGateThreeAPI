@@ -10,10 +10,6 @@ object ActionTable : LongIdTable("actions") {
     val description = text("description")
 }
 
-//TODO find if i have to add ids if i want to schema from kotlin exposed to postgre
-// if i'm using a longIdTable so it is probably handled
-// i found out how to check the db if a table exists, on spring boot startup
-// see more here: https://chatgpt.com/c/fc5aa43a-af33-4e49-8089-82008f31f76e
 class ActionEntity(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<ActionEntity>(ActionTable)
 
