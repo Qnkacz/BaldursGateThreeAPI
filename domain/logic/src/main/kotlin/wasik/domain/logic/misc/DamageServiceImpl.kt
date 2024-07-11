@@ -8,6 +8,7 @@ import kotlinx.coroutines.future.await
 import org.jetbrains.exposed.dao.id.EntityID
 import org.springframework.stereotype.Service
 import wasik.infrastructure.logic.repository.DamageRepository
+import wasik.infrastructure.model.table.DamageEntity
 
 @Service
 class DamageServiceImpl(
@@ -17,7 +18,7 @@ class DamageServiceImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun postDamages(damages: Collection<Damage>): List<EntityID<Long>> = coroutineScope {
+    override suspend fun postDamages(damages: Collection<Damage>): List<DamageEntity> = coroutineScope {
         damages.map { damage: Damage ->
             async { damageRepository.save(damage).await() }
         }.awaitAll()

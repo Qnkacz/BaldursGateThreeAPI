@@ -5,6 +5,6 @@ spring:
   application:
     name: BaldursGateThreeAPI
   datasource:
-    url: jdbc:postgresql://localhost:5432/mydatabase
+    url: jdbc:postgresql://localhost:5433/mydatabase
     username: myuser #{DATABASE_USERNAME}
     password: secret #{DATABASE_PASSWORD}

@@ -8,6 +8,7 @@ import kotlinx.coroutines.future.await
 import org.jetbrains.exposed.dao.id.EntityID
 import org.springframework.stereotype.Service
 import wasik.infrastructure.logic.repository.PropertyRepository
+import wasik.infrastructure.model.table.PropertyEntity
 
 @Service
 class PropertyServiceImpl(
@@ -17,7 +18,7 @@ class PropertyServiceImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun postProperties(properties: Collection<Property>): List<EntityID<Long>> = coroutineScope {
+    override suspend fun postProperties(properties: Collection<Property>): List<PropertyEntity> = coroutineScope {
         properties.map { property ->
             async { propertyRepository.saveProperty(property).await() }
         }.awaitAll()
