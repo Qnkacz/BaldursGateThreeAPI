@@ -5,9 +5,9 @@ import wasik.api.model.exception.ErrorResponse
 
 interface ExceptionHandler<T : Throwable> {
 
-    fun getResponseInfo(exception: T): Pair<ErrorResponse, HttpStatus>
+    suspend fun getResponseInfo(exception: T): Pair<ErrorResponse, HttpStatus>
 
-    fun getResponseStatus(exception: T): HttpStatus
+    suspend fun getResponseStatus(exception: T): HttpStatus
 
     /* Hi me from the future,
     *  For now I'm gonna implement Error responses to take the Exception type and simple convert it to a string

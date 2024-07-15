@@ -3,6 +3,7 @@ package wasik.infrastructure.logic.repository.weapon
 import domain.model.item.CommonItemData
 import domain.model.item.ItemRarity
 import domain.model.item.weapon.*
+import io.klogging.Klogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ import wasik.infrastructure.model.table.item.weapon.*
 import java.util.concurrent.CompletableFuture
 
 @Repository
-open class WeaponRepository {
+open class WeaponRepository : Klogging {
 
     fun saveWeapon(weaponCommand: WeaponCommand): CompletableFuture<WeaponEntity> {
         val savedWeaponEntity = CompletableFuture<WeaponEntity>()

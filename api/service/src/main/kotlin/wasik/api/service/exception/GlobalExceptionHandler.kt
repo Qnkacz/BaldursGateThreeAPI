@@ -1,7 +1,7 @@
 package wasik.api.service.exception
 
 import domain.model.exception.DomainException
-import org.slf4j.LoggerFactory
+import io.klogging.Klogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -19,12 +19,10 @@ class GlobalExceptionHandler(
     private val apiExceptionHandler: ApiExceptionHandler,
     private val domainExceptionHandler: DomainExceptionHandler,
     private val infrastructureExceptionHandler: InfrastructureExceptionHandler
-) {
-
-    private val logger = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
+) :Klogging {
 
     @ExceptionHandler(RuntimeException::class)
-    fun handleRuntimeExceptions(ex: RuntimeException): ResponseEntity<ErrorResponse> {
+    suspend fun handleRuntimeExceptions(ex: RuntimeException): ResponseEntity<ErrorResponse> {
         return when (ex) {
             is DomainException -> handleDomainException(ex)
             is ApiException -> handleApiException(ex)
@@ -34,8 +32,8 @@ class GlobalExceptionHandler(
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun handleConstraintValidationExceptions(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
-        logger.error(ex.message, ex)
+    suspend fun handleConstraintValidationExceptions(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
+        logger.error(ex.message!!, ex)
         val incorrectFields = ex.bindingResult.fieldErrors.joinToString(separator = " and ") { it.field }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             ErrorResponse(
@@ -45,24 +43,24 @@ class GlobalExceptionHandler(
         )
     }
 
-    private fun defaultErrorResponse(ex: RuntimeException): ErrorResponse {
-        logger.error(ex.message, ex)
+    private suspend fun defaultErrorResponse(ex: RuntimeException): ErrorResponse {
+        logger.error(ex.message!!, ex)
         return ErrorResponse(code = "Unknown", message = ex.message!!)
     }
 
-    private fun handleApiException(ex: ApiException): ResponseEntity<ErrorResponse> {
+    private suspend fun handleApiException(ex: ApiException): ResponseEntity<ErrorResponse> {
         val (errorResponse, httpStatus) = apiExceptionHandler.getResponseInfo(ex)
         return ResponseEntity.status(httpStatus)
             .body(errorResponse)
     }
 
-    private fun handleDomainException(ex: DomainException): ResponseEntity<ErrorResponse> {
+    private suspend fun handleDomainException(ex: DomainException): ResponseEntity<ErrorResponse> {
         val (errorResponse, httpStatus) = domainExceptionHandler.getResponseInfo(ex)
         return ResponseEntity.status(httpStatus)
             .body(errorResponse)
     }
 
-    private fun handleInfraStructureException(ex: InfrastructureException): ResponseEntity<ErrorResponse> {
+    private suspend fun handleInfraStructureException(ex: InfrastructureException): ResponseEntity<ErrorResponse> {
         val (errorResponse, httpStatus) = infrastructureExceptionHandler.getResponseInfo(ex)
         return ResponseEntity.status(httpStatus)
             .body(errorResponse)

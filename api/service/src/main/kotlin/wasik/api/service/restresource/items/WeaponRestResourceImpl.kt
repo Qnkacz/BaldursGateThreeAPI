@@ -19,19 +19,21 @@ open class WeaponRestResourceImpl(private val weaponMapper: WeaponMapper, privat
     WeaponRestResource, Klogging {
     @GetMapping("/{name}")
     override suspend fun getWeaponByName(@PathVariable name: String): ResponseEntity<List<Weapon>> = coroutineScope {
-        val foundWeapons = weaponService.getWeaponByName(name).map {
-            async {
-                weaponMapper.mapToWeaponResponse(it)
-            }
-        }
-            .awaitAll()
-        ResponseEntity.ok(foundWeapons)
+       return@coroutineScope withLogContext("traceId" to UUID.randomUUID()) {
+           val foundWeapons = weaponService.getWeaponByName(name).map {
+               async {
+                   weaponMapper.mapToWeaponResponse(it)
+               }
+           }
+               .awaitAll()
+           ResponseEntity.ok(foundWeapons)
+       }
     }
 
     @PostMapping
     override suspend fun postWeapon(@RequestBody @Valid weapon: Weapon): ResponseEntity<Void> = coroutineScope {
         return@coroutineScope withLogContext("traceId" to UUID.randomUUID()) {
-            logger.info("started service")
+            logger.info("Started")
             val weaponCommandDeferred = async { weaponMapper.mapToWeaponCommand(weapon) }
             weaponService.postWeapon(weaponCommandDeferred.await())
             ResponseEntity.ok().build()

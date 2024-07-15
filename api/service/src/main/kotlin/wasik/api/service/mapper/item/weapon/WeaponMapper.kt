@@ -17,9 +17,8 @@ import wasik.api.model.model.weapon.Weapon
 import wasik.api.service.mapper.item.CommonItemDataMapper
 import wasik.api.service.mapper.item.PropertyMapper
 import wasik.api.service.mapper.item.damage.DamageMapper
-import kotlin.coroutines.CoroutineContext
-import wasik.api.model.model.Damage as ApiWeaponDamage
 import wasik.api.model.item.weapon.WeaponType as ApiWeaponType
+import wasik.api.model.model.Damage as ApiWeaponDamage
 
 @Component
 class WeaponMapper(
@@ -31,9 +30,8 @@ class WeaponMapper(
     private val typeMapper: TypeMapper,
     private val propertyMapper: PropertyMapper,
     private val damageMapper: DamageMapper
-): Klogging {
+) {
     suspend fun mapToWeaponCommand(weapon: Weapon): WeaponCommand = coroutineScope {
-        logger.info("started mapping")
         val commonItemData = async { commonItemDataMapper.mapToCommonItemInfo(weapon) }
         val weaponClass = async { classMapper.mapToClass(weapon.weaponClass) }
         val handType = async { handTypeMapper.mapToHandType(weapon.type) }
