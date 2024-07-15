@@ -58,8 +58,9 @@ class WeaponValidator: Klogging {
     }
 
     private suspend fun validateWeaponLength(name: String) {
-        if (name.length !in 51 downTo 1) {
-            logger.error("Weapon name length was: ${name.length}")
+        val length: Int = name.length
+        if (length !in 51 downTo 1) {
+            logger.error("Weapon name length was: $length")
             throw DomainException(
                 type = VALIDATION_ERROR,
                 message = "Provided weapon name length must be between 1 and 50 characters"
@@ -76,24 +77,27 @@ class WeaponValidator: Klogging {
                 message = "A weapon must have damage information"
             )
         }
-        if (damage.count() > maxAllowed) {
-            logger.error("Damage had: ${damage.count()} elements")
+        val count: Int = damage.count()
+        if (count > maxAllowed) {
+            logger.error("Damage had: $count elements")
             throw DomainException(type = VALIDATION_ERROR, message = "A weapon must have at most 4 damage attributes")
         }
     }
 
     private suspend fun validateActions(actions: Set<Action>) {
         val maxAllowed = 4
-        if (actions.count() > maxAllowed) {
-            logger.error("Actions had ${actions.count()} elements")
+        val count: Int = actions.count()
+        if (count > maxAllowed) {
+            logger.error("Actions had $count elements")
             throw DomainException(type = VALIDATION_ERROR, message = "A weapon must have at most 4 actions")
         }
     }
 
     private suspend fun validateProperties(properties: Set<Property>) {
         val maxAllowed = 3
-        if (properties.count() > maxAllowed) {
-            logger.error("Properties had ${properties.count()} elements")
+        val count: Int = properties.count()
+        if (count > maxAllowed) {
+            logger.error("Properties had $count elements")
             throw DomainException(type = VALIDATION_ERROR, message = "A weapon must have at most 3 actions")
         }
     }
