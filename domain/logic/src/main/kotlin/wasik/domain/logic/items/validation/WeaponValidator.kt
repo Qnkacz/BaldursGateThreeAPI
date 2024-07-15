@@ -8,13 +8,14 @@ import domain.model.item.weapon.WeaponClass
 import domain.model.item.weapon.WeaponType
 import domain.model.misc.Action
 import domain.model.misc.Property
+import io.klogging.Klogging
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import org.springframework.stereotype.Component
 
 @Component
-class WeaponValidator {
+class WeaponValidator: Klogging {
 
     private val allowedRangedWeaponClasses = setOf(
         WeaponClass.HAND_CROSSBOW,
@@ -42,12 +43,13 @@ class WeaponValidator {
         }
     }
 
-    fun validateName(name: String) {
+    suspend fun validateName(name: String) {
         validateWeaponLength(name)
     }
 
-    private fun validateRange(range: Float) {
+    private suspend fun validateRange(range: Float) {
         if (range !in 1f..100f) {
+            logger.error { "Range was $range" }
             throw DomainException(
                 type = VALIDATION_ERROR,
                 message = "Provided weapon range must be between 1 and 100"
@@ -55,8 +57,10 @@ class WeaponValidator {
         }
     }
 
-    private fun validateWeaponLength(name: String) {
-        if (name.length !in 51 downTo 1) {
+    private suspend fun validateWeaponLength(name: String) {
+        val length: Int = name.length
+        if (length !in 51 downTo 1) {
+            logger.error("Weapon name length was: $length")
             throw DomainException(
                 type = VALIDATION_ERROR,
                 message = "Provided weapon name length must be between 1 and 50 characters"
@@ -64,35 +68,43 @@ class WeaponValidator {
         }
     }
 
-    private fun validateDamage(damage: Set<Damage>) {
+    private suspend fun validateDamage(damage: Set<Damage>) {
         val maxAllowed = 4
         if (damage.isEmpty()) {
+            logger.error("Damage is empty")
             throw DomainException(
                 type = VALIDATION_ERROR,
                 message = "A weapon must have damage information"
             )
         }
-        if (damage.count() > maxAllowed) {
+        val count: Int = damage.count()
+        if (count > maxAllowed) {
+            logger.error("Damage had: $count elements")
             throw DomainException(type = VALIDATION_ERROR, message = "A weapon must have at most 4 damage attributes")
         }
     }
 
-    private fun validateActions(actions: Set<Action>) {
+    private suspend fun validateActions(actions: Set<Action>) {
         val maxAllowed = 4
-        if (actions.count() > maxAllowed) {
+        val count: Int = actions.count()
+        if (count > maxAllowed) {
+            logger.error("Actions had $count elements")
             throw DomainException(type = VALIDATION_ERROR, message = "A weapon must have at most 4 actions")
         }
     }
 
-    private fun validateProperties(properties: Set<Property>) {
+    private suspend fun validateProperties(properties: Set<Property>) {
         val maxAllowed = 3
-        if (properties.count() > maxAllowed) {
+        val count: Int = properties.count()
+        if (count > maxAllowed) {
+            logger.error("Properties had $count elements")
             throw DomainException(type = VALIDATION_ERROR, message = "A weapon must have at most 3 actions")
         }
     }
 
-    private fun validateRangedWeaponClasses(weaponClass: WeaponClass) {
+    private suspend fun validateRangedWeaponClasses(weaponClass: WeaponClass) {
         if (!allowedRangedWeaponClasses.contains(weaponClass)) {
+            logger.error("provided weapon class was: $weaponClass")
             throw DomainException(
                 type = VALIDATION_ERROR,
                 message = "Provided weapon class ${weaponClass.name} cannot be Ranged"
@@ -100,8 +112,9 @@ class WeaponValidator {
         }
     }
 
-    private fun validateMeleeWeaponClasses(weaponClass: WeaponClass) {
+    private suspend fun validateMeleeWeaponClasses(weaponClass: WeaponClass) {
         if (allowedRangedWeaponClasses.contains(weaponClass)) {
+            logger.error("provided weapon class was: $weaponClass")
             throw DomainException(
                 type = VALIDATION_ERROR,
                 message = "Provided weapon class ${weaponClass.name} cannot be Melee"

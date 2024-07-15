@@ -11,7 +11,7 @@
     <packaging>pom</packaging>
 
     <name>domain</name>
-    <url>http://maven.apache.org</url>
+    <url>https://maven.apache.org</url>
     <modules>
         <module>logic</module>
         <module>model</module>

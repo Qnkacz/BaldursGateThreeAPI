@@ -4,6 +4,7 @@ import domain.model.damage.Damage
 import domain.model.item.weapon.WeaponCommand
 import domain.model.misc.Action
 import domain.model.misc.Property
+import io.klogging.Klogging
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -24,8 +25,10 @@ class WeaponServiceImpl(
     private val actionService: ActionService,
     private val weaponValidator: WeaponValidator
 ) :
-    WeaponService {
+    WeaponService, Klogging {
+
     override suspend fun postWeapon(weaponCommand: WeaponCommand): Unit = coroutineScope {
+        logger.info("Started")
         weaponValidator.validateWeapon(weaponCommand)
         val savedWeapon = weaponRepository.saveWeapon(weaponCommand)
         val savedDamages = async { damageService.postDamages(weaponCommand.damage) }
@@ -41,6 +44,7 @@ class WeaponServiceImpl(
     }
 
     override suspend fun getWeaponByName(name: String): List<WeaponCommand> = coroutineScope {
+        logger.info("Started")
         weaponValidator.validateName(name)
         val idWeaponPairs = weaponRepository.findByName(name).await()
         val weaponCommands: List<WeaponCommand> = idWeaponPairs.map {
