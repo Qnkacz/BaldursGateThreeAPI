@@ -1,7 +1,6 @@
 package wasik.domain.logic.misc
 
 import domain.model.misc.Action
-import org.jetbrains.exposed.dao.id.EntityID
 import wasik.infrastructure.model.table.ActionEntity
 
 interface ActionService {

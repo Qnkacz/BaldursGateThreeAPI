@@ -1,7 +1,6 @@
 package wasik.domain.logic.misc
 
 import domain.model.damage.Damage
-import org.jetbrains.exposed.dao.id.EntityID
 import wasik.infrastructure.model.table.DamageEntity
 
 interface DamageService {

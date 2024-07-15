@@ -1,7 +1,6 @@
 package wasik.domain.logic.misc
 
 import domain.model.misc.Property
-import org.jetbrains.exposed.dao.id.EntityID
 import wasik.infrastructure.model.table.PropertyEntity
 
 interface PropertyService {

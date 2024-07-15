@@ -1,7 +1,6 @@
 package wasik.infrastructure.model.table.item.weapon
 
 import org.jetbrains.exposed.sql.Table
-import wasik.infrastructure.model.table.ActionTable
 import wasik.infrastructure.model.table.PropertyTable
 
 object WeaponPropertyTable : Table("weapon_properties") {

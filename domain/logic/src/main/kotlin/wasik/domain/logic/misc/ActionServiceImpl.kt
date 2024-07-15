@@ -5,7 +5,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.future.await
-import org.jetbrains.exposed.dao.id.EntityID
 import org.springframework.stereotype.Service
 import wasik.infrastructure.logic.repository.ActionRepository
 import wasik.infrastructure.model.table.ActionEntity

@@ -5,10 +5,6 @@ import domain.model.item.weapon.HandType
 import domain.model.item.weapon.WeaponCommand
 import domain.model.item.weapon.WeaponType
 import domain.model.misc.Property
-import io.klogging.Klogging
-import io.klogging.context.LogContext
-import io.klogging.context.logContext
-import io.klogging.logger
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
